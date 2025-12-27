@@ -1,0 +1,67 @@
+[
+  {
+    "id": "990e8400-e29b-41d4-a716-446655440001",
+    "name": "CNC Machine #1",
+    "serial_number": "CNC-2020-001",
+    "category": "Machining",
+    "purchase_date": "2020-05-15",
+    "warranty_expiry": "2025-05-15",
+    "location": "Building A - Floor 2",
+    "department_id": "660e8400-e29b-41d4-a716-446655440001",
+    "assigned_employee": "John Smith",
+    "maintenance_team_id": "770e8400-e29b-41d4-a716-446655440001",
+    "status": "active"
+  },
+  {
+    "id": "990e8400-e29b-41d4-a716-446655440002",
+    "name": "Hydraulic Press",
+    "serial_number": "HYDRO-2019-045",
+    "category": "Hydraulics",
+    "purchase_date": "2019-10-22",
+    "warranty_expiry": "2024-10-22",
+    "location": "Building C - Floor 1",
+    "department_id": "660e8400-e29b-41d4-a716-446655440003",
+    "assigned_employee": "Alice Johnson",
+    "maintenance_team_id": "770e8400-e29b-41d4-a716-446655440003",
+    "status": "active"
+  },
+  {
+    "id": "990e8400-e29b-41d4-a716-446655440003",
+    "name": "Electric Motor Assembly",
+    "serial_number": "ELEC-2021-089",
+    "category": "Electrical",
+    "purchase_date": "2021-03-10",
+    "warranty_expiry": "2026-03-10",
+    "location": "Building B - Floor 3",
+    "department_id": "660e8400-e29b-41d4-a716-446655440002",
+    "assigned_employee": "Bob Wilson",
+    "maintenance_team_id": "770e8400-e29b-41d4-a716-446655440002",
+    "status": "active"
+  },
+  {
+    "id": "990e8400-e29b-41d4-a716-446655440004",
+    "name": "Conveyor Belt System",
+    "serial_number": "CONV-2018-120",
+    "category": "Material Handling",
+    "purchase_date": "2018-08-05",
+    "warranty_expiry": "2023-08-05",
+    "location": "Building A - Floor 1",
+    "department_id": "660e8400-e29b-41d4-a716-446655440004",
+    "assigned_employee": "Carol Davis",
+    "maintenance_team_id": "770e8400-e29b-41d4-a716-446655440004",
+    "status": "scrapped"
+  },
+  {
+    "id": "990e8400-e29b-41d4-a716-446655440005",
+    "name": "Precision Lathe",
+    "serial_number": "LATHE-2022-012",
+    "category": "Machining",
+    "purchase_date": "2022-06-18",
+    "warranty_expiry": "2027-06-18",
+    "location": "Building A - Floor 2",
+    "department_id": "660e8400-e29b-41d4-a716-446655440001",
+    "assigned_employee": "David Martinez",
+    "maintenance_team_id": "770e8400-e29b-41d4-a716-446655440001",
+    "status": "active"
+  }
+]
