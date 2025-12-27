@@ -12,7 +12,7 @@ export default function TeamsPage() {
 
   const { data: teamsData, isLoading: teamsLoading } = useQuery({
     queryKey: ['teams'],
-    queryFn: () => apiClient.getTeams(),
+    queryFn: () => apiClient.getMaintenanceTeams(),
   });
 
   const { data: techniciansData, isLoading: techniciansLoading } = useQuery({
