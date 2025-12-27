@@ -38,14 +38,13 @@ if [ $? -eq 0 ]; then
     echo ""
     echo "✅ Seed data loaded successfully!"
     echo ""
-    echo "📊 Test credentials:"
+    echo "📊 Test credentials (all passwords: password123):"
     echo "   Admin:      alice.admin@gearguard.com"
     echo "   Manager:    bob.manager@gearguard.com"
     echo "   Technician: dave.tech@gearguard.com"
     echo "   User:       henry.user@gearguard.com"
     echo ""
-    echo "   Password: (hashed - $2b$12$placeholder_hash...)"
-    echo "   ⚠️  Update password_hash with real bcrypt hashes!"
+    echo "   Password: password123"
 else
     echo "❌ Error loading seed data."
     exit 1

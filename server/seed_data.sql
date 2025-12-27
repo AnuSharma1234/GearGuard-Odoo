@@ -28,26 +28,25 @@ INSERT INTO maintenance_teams (id, name, specialization) VALUES
   ('dddddddd-dddd-dddd-dddd-dddddddddddd', 'Material Handling', 'Forklifts and Conveyors');
 
 -- Insert Users
--- Note: In production, use proper password hashing (bcrypt, argon2, etc.)
--- These are placeholder hashes - replace with actual hashed passwords
+-- Password for all test users: password123
 INSERT INTO users (id, name, email, role, password_hash, is_active) VALUES
   -- Admin
-  ('00000000-0000-0000-0000-000000000001', 'Alice Admin', 'alice.admin@gearguard.com', 'admin', '$2b$12$placeholder_hash_admin', true),
+  ('00000000-0000-0000-0000-000000000001', 'Alice Admin', 'alice.admin@gearguard.com', 'admin', '$2b$12$CTdIiUqKJLLzclA.kqaDi.ExLimLbDXTvo2vNcomhgCw1.OLVZZ.u', true),
   
   -- Managers
-  ('00000000-0000-0000-0000-000000000002', 'Bob Manager', 'bob.manager@gearguard.com', 'manager', '$2b$12$placeholder_hash_manager', true),
-  ('00000000-0000-0000-0000-000000000003', 'Carol Manager', 'carol.manager@gearguard.com', 'manager', '$2b$12$placeholder_hash_manager2', true),
+  ('00000000-0000-0000-0000-000000000002', 'Bob Manager', 'bob.manager@gearguard.com', 'manager', '$2b$12$duBaM2YI0T43TQ9ariccXOoBl/7cSH7PyyM9jqhFd0E9f6LAGH9lW', true),
+  ('00000000-0000-0000-0000-000000000003', 'Carol Manager', 'carol.manager@gearguard.com', 'manager', '$2b$12$EabJRMsSB3wtlnBNDgZveO175xFDiHRiDnpgwGAahUDPdTkfqMe.m', true),
   
   -- Technicians
-  ('00000000-0000-0000-0000-000000000010', 'Dave Technician', 'dave.tech@gearguard.com', 'technician', '$2b$12$placeholder_hash_tech1', true),
-  ('00000000-0000-0000-0000-000000000011', 'Eve Technician', 'eve.tech@gearguard.com', 'technician', '$2b$12$placeholder_hash_tech2', true),
-  ('00000000-0000-0000-0000-000000000012', 'Frank Technician', 'frank.tech@gearguard.com', 'technician', '$2b$12$placeholder_hash_tech3', true),
-  ('00000000-0000-0000-0000-000000000013', 'Grace Technician', 'grace.tech@gearguard.com', 'technician', '$2b$12$placeholder_hash_tech4', true),
+  ('00000000-0000-0000-0000-000000000010', 'Dave Technician', 'dave.tech@gearguard.com', 'technician', '$2b$12$0vnrdB/v6rjMmbmNFCvlZ.vi94PNjFBpSE20D7YzZYxxGwOMgZO3C', true),
+  ('00000000-0000-0000-0000-000000000011', 'Eve Technician', 'eve.tech@gearguard.com', 'technician', '$2b$12$jefWFrHH3HNYpCHuY8Stv.z3UVXwpSc.QDuPiFek9dCFv43S2r7l2', true),
+  ('00000000-0000-0000-0000-000000000012', 'Frank Technician', 'frank.tech@gearguard.com', 'technician', '$2b$12$oYYrgHaB/q5fU5FB0xW1yuoAgsNldIeQAKt6eUwleOPnWStUGxO7q', true),
+  ('00000000-0000-0000-0000-000000000013', 'Grace Technician', 'grace.tech@gearguard.com', 'technician', '$2b$12$eyfv1HjRW9lw6jOq3wBgxOsQv3Yh/p4RXqnAga.K42/B1gwLBkgAy', true),
   
   -- Regular Users
-  ('00000000-0000-0000-0000-000000000020', 'Henry User', 'henry.user@gearguard.com', 'user', '$2b$12$placeholder_hash_user1', true),
-  ('00000000-0000-0000-0000-000000000021', 'Iris User', 'iris.user@gearguard.com', 'user', '$2b$12$placeholder_hash_user2', true),
-  ('00000000-0000-0000-0000-000000000022', 'Jack User', 'jack.user@gearguard.com', 'user', '$2b$12$placeholder_hash_user3', true);
+  ('00000000-0000-0000-0000-000000000020', 'Henry User', 'henry.user@gearguard.com', 'user', '$2b$12$SP0X2pTXLL9nLjrnAYHYY.BXk6.Wwm2bXtTHK8OISZYFguTUuNI6m', true),
+  ('00000000-0000-0000-0000-000000000021', 'Iris User', 'iris.user@gearguard.com', 'user', '$2b$12$qKFJeXsWvmHftVk2jD4buu36vIfxSJy9S3vz7w/ZI81oQjMc8wv9O', true),
+  ('00000000-0000-0000-0000-000000000022', 'Jack User', 'jack.user@gearguard.com', 'user', '$2b$12$AAgqAnj..cOJDnenOOOagO6uzZ8R6m9akYCOM5HjoG5jzDKltcXGC', true);
 
 -- Insert Technicians (mapping to technician users)
 INSERT INTO technicians (id, user_id, team_id, is_active) VALUES
