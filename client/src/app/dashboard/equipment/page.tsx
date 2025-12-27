@@ -1,6 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 import { apiClient } from '@/lib/api';
 import { useAuthStore } from '@/store/authStore';
 import { Equipment } from '@/types/equipment';
@@ -9,6 +10,7 @@ import techniciansRawData from '../../../../data/technicians.json';
 import usersRawData from '../../../../data/users.json';
 
 export default function EquipmentPage() {
+  const router = useRouter();
   const user = useAuthStore((state) => state.user);
 
   const { data: equipmentData, isLoading: equipmentLoading } = useQuery({
@@ -85,7 +87,10 @@ export default function EquipmentPage() {
             Manage all equipment and maintenance
           </p>
         </div>
-        <button className="px-4 py-2 bg-white text-black text-sm font-medium rounded hover:bg-[#e0e0e0] transition-colors">
+        <button 
+          onClick={() => router.push('/dashboard/equipment/new')}
+          className="px-4 py-2 bg-white text-black text-sm font-medium rounded hover:bg-[#e0e0e0] transition-colors"
+        >
           New
         </button>
       </div>
