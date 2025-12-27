@@ -1,0 +1,42 @@
+[
+  {
+    "id": "cc0e8400-e29b-41d4-a716-446655440001",
+    "request_id": "aa0e8400-e29b-41d4-a716-446655440001",
+    "old_stage": "new",
+    "new_stage": "in_progress",
+    "changed_by": "550e8400-e29b-41d4-a716-446655440002",
+    "changed_at": "2025-12-16T10:30:00Z"
+  },
+  {
+    "id": "cc0e8400-e29b-41d4-a716-446655440002",
+    "request_id": "aa0e8400-e29b-41d4-a716-446655440003",
+    "old_stage": "new",
+    "new_stage": "in_progress",
+    "changed_by": "550e8400-e29b-41d4-a716-446655440002",
+    "changed_at": "2025-12-12T09:00:00Z"
+  },
+  {
+    "id": "cc0e8400-e29b-41d4-a716-446655440003",
+    "request_id": "aa0e8400-e29b-41d4-a716-446655440003",
+    "old_stage": "in_progress",
+    "new_stage": "repaired",
+    "changed_by": "550e8400-e29b-41d4-a716-446655440002",
+    "changed_at": "2025-12-19T16:45:00Z"
+  },
+  {
+    "id": "cc0e8400-e29b-41d4-a716-446655440004",
+    "request_id": "aa0e8400-e29b-41d4-a716-446655440004",
+    "old_stage": "new",
+    "new_stage": "scrap",
+    "changed_by": "550e8400-e29b-41d4-a716-446655440001",
+    "changed_at": "2025-12-05T14:20:00Z"
+  },
+  {
+    "id": "cc0e8400-e29b-41d4-a716-446655440005",
+    "request_id": "aa0e8400-e29b-41d4-a716-446655440002",
+    "old_stage": "new",
+    "new_stage": "in_progress",
+    "changed_by": "550e8400-e29b-41d4-a716-446655440002",
+    "changed_at": "2025-12-21T08:15:00Z"
+  }
+]

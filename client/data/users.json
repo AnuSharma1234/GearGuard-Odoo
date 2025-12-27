@@ -1,0 +1,42 @@
+[
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440001",
+    "name": "John Administrator",
+    "email": "john.admin@gearguard.com",
+    "role": "admin",
+    "is_active": true,
+    "created_at": "2025-01-15T10:30:00Z"
+  },
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440002",
+    "name": "Sarah Manager",
+    "email": "sarah.manager@gearguard.com",
+    "role": "manager",
+    "is_active": true,
+    "created_at": "2025-01-15T10:30:00Z"
+  },
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440003",
+    "name": "Mike Technician",
+    "email": "mike.technician@gearguard.com",
+    "role": "technician",
+    "is_active": true,
+    "created_at": "2025-01-15T10:30:00Z"
+  },
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440004",
+    "name": "Emily User",
+    "email": "emily.user@gearguard.com",
+    "role": "user",
+    "is_active": true,
+    "created_at": "2025-01-15T10:30:00Z"
+  },
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440005",
+    "name": "Robert Technician",
+    "email": "robert.technician@gearguard.com",
+    "role": "technician",
+    "is_active": true,
+    "created_at": "2025-01-16T10:30:00Z"
+  }
+]
