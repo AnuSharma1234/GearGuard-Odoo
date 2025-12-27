@@ -1,14 +1,16 @@
--- GearGuard Database Schema
--- Created: 2025-12-27
+-- ==============================================================================
+-- GearGuard Database Schema Initialization
+-- ==============================================================================
+-- This file is automaticalsrc/app/dashboard/equipment/new/page.tsxly executed when the PostgreSQL container starts
+-- for the first time.
+-- ==============================================================================
 
--- ============================================
--- 1. Extensions
--- ============================================
+-- 1️⃣ Extensions
+-- ==============================================================================
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- ============================================
--- 2. Enums
--- ============================================
+-- 2️⃣ Enums
+-- ==============================================================================
 CREATE TYPE user_role AS ENUM (
   'admin',
   'manager',
@@ -33,9 +35,8 @@ CREATE TYPE request_stage AS ENUM (
   'scrap'
 );
 
--- ============================================
--- 3. Users
--- ============================================
+-- 3️⃣ Users
+-- ==============================================================================
 CREATE TABLE users (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   name VARCHAR(150) NOT NULL,
@@ -46,27 +47,24 @@ CREATE TABLE users (
   created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
--- ============================================
--- 4. Departments
--- ============================================
+-- 4️⃣ Departments
+-- ==============================================================================
 CREATE TABLE departments (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   name VARCHAR(100) UNIQUE NOT NULL,
   description TEXT
 );
 
--- ============================================
--- 5. Maintenance Teams
--- ============================================
+-- 5️⃣ Maintenance Teams
+-- ==============================================================================
 CREATE TABLE maintenance_teams (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   name VARCHAR(100) UNIQUE NOT NULL,
   specialization VARCHAR(100)
 );
 
--- ============================================
--- 6. Technicians
--- ============================================
+-- 6️⃣ Technicians
+-- ==============================================================================
 CREATE TABLE technicians (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   user_id UUID UNIQUE NOT NULL,
@@ -82,9 +80,8 @@ CREATE TABLE technicians (
     ON DELETE RESTRICT
 );
 
--- ============================================
--- 7. Equipment
--- ============================================
+-- 7️⃣ Equipment
+-- ==============================================================================
 CREATE TABLE equipment (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   name VARCHAR(255) NOT NULL,
@@ -110,9 +107,8 @@ CREATE TABLE equipment (
     CHECK (warranty_expiry IS NULL OR warranty_expiry >= purchase_date)
 );
 
--- ============================================
--- 8. Maintenance Requests
--- ============================================
+-- 8️⃣ Maintenance Requests
+-- ==============================================================================
 CREATE TABLE maintenance_requests (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   subject VARCHAR(255) NOT NULL,
@@ -146,9 +142,8 @@ CREATE TABLE maintenance_requests (
     )
 );
 
--- ============================================
--- 9. Time Logs
--- ============================================
+-- 9️⃣ Time Logs
+-- ==============================================================================
 CREATE TABLE time_logs (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   request_id UUID NOT NULL,
@@ -165,9 +160,8 @@ CREATE TABLE time_logs (
     ON DELETE RESTRICT
 );
 
--- ============================================
--- 10. Audit / Stage History
--- ============================================
+-- 🔟 Audit / Stage History
+-- ==============================================================================
 CREATE TABLE request_audit_logs (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   request_id UUID NOT NULL,
@@ -185,9 +179,8 @@ CREATE TABLE request_audit_logs (
     ON DELETE RESTRICT
 );
 
--- ============================================
--- 11. Indexes (Performance)
--- ============================================
+-- 11️⃣ Indexes (Performance)
+-- ==============================================================================
 CREATE INDEX idx_requests_stage ON maintenance_requests(stage);
 CREATE INDEX idx_requests_equipment ON maintenance_requests(equipment_id);
 CREATE INDEX idx_requests_assigned_to ON maintenance_requests(assigned_to);
@@ -196,4 +189,8 @@ CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_users_role ON users(role);
 CREATE INDEX idx_technicians_user ON technicians(user_id);
 CREATE INDEX idx_time_logs_request ON time_logs(request_id);
-CREATE INDEX idx_time_logs_technician ON time_logs(technician_id);
+CREATE INDEX idx_audit_logs_request ON request_audit_logs(request_id);
+
+-- ==============================================================================
+-- Database Schema Initialization Complete
+-- ==============================================================================
