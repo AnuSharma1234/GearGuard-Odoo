@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { apiClient } from '@/lib/api';
@@ -8,10 +9,12 @@ import { Equipment } from '@/types/equipment';
 import equipmentRawData from '../../../../data/equipment.json';
 import techniciansRawData from '../../../../data/technicians.json';
 import usersRawData from '../../../../data/users.json';
+import EquipmentModal from '@/components/equipment/EquipmentModal';
 
 export default function EquipmentPage() {
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
+  const [selectedEquipmentId, setSelectedEquipmentId] = useState<string | null>(null);
 
   const { data: equipmentData, isLoading: equipmentLoading } = useQuery({
     queryKey: ['equipment'],
@@ -173,7 +176,7 @@ export default function EquipmentPage() {
                     <tr
                       key={item.id}
                       className="hover:bg-[#0a0a0a] transition-colors cursor-pointer"
-                      onClick={() => window.location.href = `/dashboard/equipment/${item.id}`}
+                      onClick={() => setSelectedEquipmentId(item.id)}
                     >
                       <td className="px-6 py-4">
                         <div className="text-sm font-medium text-white">
@@ -216,6 +219,14 @@ export default function EquipmentPage() {
           </table>
         </div>
       </div>
+
+      {/* Equipment Modal */}
+      {selectedEquipmentId && (
+        <EquipmentModal
+          equipmentId={selectedEquipmentId}
+          onClose={() => setSelectedEquipmentId(null)}
+        />
+      )}
     </div>
   );
 }
