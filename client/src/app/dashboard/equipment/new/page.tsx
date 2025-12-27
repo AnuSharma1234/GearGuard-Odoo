@@ -48,7 +48,7 @@ export default function NewEquipmentPage() {
 
   const { data: teamsData } = useQuery({
     queryKey: ['maintenance-teams'],
-    queryFn: () => apiClient.getMaintenanceTeams(),
+    queryFn: () => apiClient.getTeams(),
   });
 
   const { data: usersData } = useQuery({

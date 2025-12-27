@@ -31,7 +31,7 @@ export default function QuickActions({ users }: Props) {
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
       {role === 'admin' || role === 'manager' ? (
         <>
-          <Link href="/requests/calendar" className={`${base}`}>
+          <Link href="/dashboard/requests/calendar" className={`${base}`}>
             Schedule Preventive Maintenance
           </Link>
           <Link href="/reports" className={`${base}`}>

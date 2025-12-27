@@ -152,7 +152,15 @@ export default function CalendarPage() {
 
   // Handle date click to open create modal
   const handleDateClick = (date: Date) => {
-    const dateStr = date.toISOString().split('T')[0]; // YYYY-MM-DD
+    const normalized = new Date(date);
+    normalized.setHours(0, 0, 0, 0);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // Prevent scheduling on past dates
+    if (normalized < today) return;
+
+    const dateStr = normalized.toISOString().split('T')[0]; // YYYY-MM-DD
     setSelectedDate(dateStr);
     setIsModalOpen(true);
   };
@@ -248,13 +256,13 @@ export default function CalendarPage() {
       </div>
 
       {/* Calendar Container */}
-      <div className="bg-gray-900 border border-gray-800 rounded-xl shadow-2xl overflow-hidden">
+      <div className="bg-[#0f121a] border border-gray-800 rounded-xl shadow-2xl overflow-hidden">
         {/* Month Navigation */}
-        <div className="bg-gradient-to-r from-gray-800 to-gray-850 border-b border-gray-700 px-6 py-4">
+        <div className="bg-gradient-to-r from-[#121722] to-[#0e1119] border-b border-gray-800 px-6 py-4">
           <div className="flex items-center justify-between">
             <button
               onClick={handlePrevMonth}
-              className="flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-100 rounded-lg transition-all hover:scale-105 font-medium"
+              className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-100 rounded-lg transition-all hover:scale-105 font-medium border border-gray-700"
               aria-label="Previous month"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -272,7 +280,7 @@ export default function CalendarPage() {
               </h2>
               <button
                 onClick={handleToday}
-                className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all hover:scale-105 font-semibold shadow-lg"
+                className="px-5 py-2 bg-sky-700 hover:bg-sky-600 text-white rounded-lg transition-all hover:scale-105 font-semibold shadow-lg border border-sky-600"
               >
                 Today
               </button>
@@ -280,7 +288,7 @@ export default function CalendarPage() {
 
             <button
               onClick={handleNextMonth}
-              className="flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-100 rounded-lg transition-all hover:scale-105 font-medium"
+              className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-100 rounded-lg transition-all hover:scale-105 font-medium border border-gray-700"
               aria-label="Next month"
             >
               Next
@@ -292,7 +300,7 @@ export default function CalendarPage() {
         </div>
 
         {/* Calendar Grid */}
-        <div className="p-4 bg-gray-900">
+        <div className="p-4 bg-[#0f121a]">
           {/* Day headers */}
           <div className="grid grid-cols-7 gap-2 mb-2">
             {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map((day) => (
@@ -324,13 +332,13 @@ export default function CalendarPage() {
                   className={`
                     min-h-24 border rounded-lg p-2 transition-all relative
                     ${isCurrentMonth 
-                      ? 'bg-gray-850 border-gray-700 cursor-pointer hover:bg-gray-800 hover:border-gray-600 hover:shadow-lg' 
-                      : 'bg-gray-950 border-gray-800 opacity-40'}
-                    ${isToday ? 'ring-2 ring-blue-500 ring-offset-2 ring-offset-gray-900 shadow-xl' : ''}
+                      ? 'bg-[#0c1017] border-gray-800 cursor-pointer hover:bg-[#111826] hover:border-gray-700 hover:shadow-lg' 
+                      : 'bg-gray-950 border-gray-900 opacity-40'}
+                    ${isToday ? 'ring-2 ring-sky-500 ring-offset-2 ring-offset-[#0f121a] shadow-xl' : ''}
                   `}
                 >
                   {/* Date number */}
-                  <div className={`text-sm font-bold mb-1 ${isToday ? 'text-blue-400' : isCurrentMonth ? 'text-gray-200' : 'text-gray-600'}`}>
+                  <div className={`text-sm font-bold mb-1 ${isToday ? 'text-sky-400' : isCurrentMonth ? 'text-gray-200' : 'text-gray-600'}`}>
                     {day}
                   </div>
 
@@ -347,8 +355,8 @@ export default function CalendarPage() {
                           p-1.5 rounded-md cursor-pointer text-xs transition-all
                           ${
                             event.isOverdue
-                              ? 'bg-red-900 bg-opacity-40 border-l-4 border-red-500 text-red-200 hover:bg-opacity-60 hover:shadow-md'
-                              : 'bg-blue-900 bg-opacity-30 border-l-4 border-blue-500 text-blue-200 hover:bg-opacity-50 hover:shadow-md'
+                              ? 'bg-red-900/40 border-l-4 border-red-500 text-red-200 hover:bg-red-900/60 hover:shadow-md'
+                              : 'bg-sky-900/30 border-l-4 border-sky-500 text-sky-100 hover:bg-sky-900/45 hover:shadow-md'
                           }
                         `}
                       >
@@ -365,7 +373,7 @@ export default function CalendarPage() {
 
                   {/* Event count badge for multiple events */}
                   {dayEvents.length > 2 && (
-                    <div className="absolute top-1 right-1 bg-blue-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                    <div className="absolute top-1 right-1 bg-sky-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                       {dayEvents.length}
                     </div>
                   )}
@@ -377,17 +385,17 @@ export default function CalendarPage() {
       </div>
 
       {/* Legend */}
-      <div className="mt-4 flex gap-6 text-sm bg-gray-900 border border-gray-800 rounded-lg p-3">
+      <div className="mt-4 flex gap-6 text-sm bg-[#0f121a] border border-gray-800 rounded-lg p-3">
         <div className="flex items-center gap-2">
-          <div className="w-5 h-5 bg-blue-900 bg-opacity-30 border-l-4 border-blue-500 rounded"></div>
+          <div className="w-5 h-5 bg-sky-900/40 border-l-4 border-sky-500 rounded"></div>
           <span className="text-gray-300 font-medium">Scheduled Maintenance</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-5 h-5 bg-red-900 bg-opacity-40 border-l-4 border-red-500 rounded"></div>
+          <div className="w-5 h-5 bg-red-900/40 border-l-4 border-red-500 rounded"></div>
           <span className="text-gray-300 font-medium">Overdue</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-5 h-5 ring-2 ring-blue-500 rounded"></div>
+          <div className="w-5 h-5 ring-2 ring-sky-500 rounded"></div>
           <span className="text-gray-300 font-medium">Today</span>
         </div>
       </div>

@@ -303,6 +303,7 @@ export function CreatePreventiveModal({
               id="scheduledDate"
               type="date"
               value={scheduledDate}
+              min={new Date().toISOString().split('T')[0]}
               onChange={(e) => setScheduledDate(e.target.value)}
               className={`
                 w-full px-4 py-3 bg-gray-800 border rounded-lg text-gray-100
