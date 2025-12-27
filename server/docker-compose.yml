@@ -6,10 +6,11 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-gearguard}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-gearguard123}
       POSTGRES_DB: ${POSTGRES_DB:-gearguard_db}
+      PGDATA: /var/lib/postgresql/data/pgdata
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - ./postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-gearguard}"]
       interval: 10s
@@ -39,14 +40,6 @@ services:
         condition: service_healthy
     networks:
       - gearguard-network
-
-volumes:
-  postgres_data:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ${PWD}/postgres_data
 
 networks:
   gearguard-network:
