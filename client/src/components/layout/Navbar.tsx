@@ -32,19 +32,25 @@ export default function Navbar() {
               </Link>
             </div>
             <div className="hidden sm:ml-6 sm:flex sm:space-x-6">
-              {navItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors ${
-                    pathname === item.href || pathname.startsWith(item.href + '/')
-                      ? 'border-sky-500 text-zinc-50'
-                      : 'border-transparent text-zinc-400 hover:border-zinc-600 hover:text-zinc-100'
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              ))}
+              {navItems.map((item) => {
+                const isActive = item.href === '/dashboard' 
+                  ? pathname === item.href 
+                  : pathname.startsWith(item.href);
+                
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors ${
+                      isActive
+                        ? 'border-sky-500 text-zinc-50'
+                        : 'border-transparent text-zinc-400 hover:border-zinc-600 hover:text-zinc-100'
+                    }`}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
             </div>
           </div>
           <div className="flex items-center space-x-3">
