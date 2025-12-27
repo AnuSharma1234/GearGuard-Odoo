@@ -13,6 +13,7 @@ TABLE users {
   name VARCHAR(255) NOT NULL
   email VARCHAR(255) UNIQUE NOT NULL
   role ENUM('admin','manager','technician','user') NOT NULL
+  password_hash VARCHAR(255) NOT NULL
   is_active BOOLEAN DEFAULT true
   created_at TIMESTAMP DEFAULT now()
 }
@@ -25,6 +26,7 @@ TABLE departments {
   id UUID PRIMARY KEY
   name VARCHAR(100) UNIQUE NOT NULL
   description TEXT
+  created_at TIMESTAMP DEFAULT now()
 }
 
 
