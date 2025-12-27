@@ -1,14 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { apiClient } from '@/lib/api';
 import { useAuthStore } from '@/store/authStore';
 import { Equipment } from '@/types/equipment';
-import equipmentRawData from '../../../../data/equipment.json';
-import techniciansRawData from '../../../../data/technicians.json';
-import usersRawData from '../../../../data/users.json';
 import EquipmentModal from '@/components/equipment/EquipmentModal';
 
 export default function EquipmentPage() {
@@ -36,17 +33,24 @@ export default function EquipmentPage() {
     queryFn: () => apiClient.getUsers(),
   });
 
-  const equipment: Equipment[] = equipmentData || [];
+  const equipment: any[] = equipmentData || [];
   const departments = departmentsData || [];
   const technicians = techniciansData || [];
   const users = usersData || [];
 
   const isLoading = equipmentLoading || departmentsLoading || techniciansLoading || usersLoading;
 
-  // Get raw equipment data for fields not in Equipment type
-  const getRawEquipmentData = (equipmentId: string) => {
-    return equipmentRawData.find((e: any) => e.id === equipmentId);
-  };
+  // Create a map of technician ID to user name for quick lookup
+  const technicianToUserMap = useMemo(() => {
+    const map = new Map<string, string>();
+    technicians.forEach((tech: any) => {
+      const user = users.find((u: any) => u.id === tech.user_id);
+      if (user) {
+        map.set(tech.id, user.name);
+      }
+    });
+    return map;
+  }, [technicians, users]);
 
   // Get department name
   const getDepartmentName = (departmentId?: string) => {
@@ -55,18 +59,13 @@ export default function EquipmentPage() {
     return dept?.name || 'N/A';
   };
 
-  // Get team technician from raw data
-  const getTeamTechnician = (equipmentId: string) => {
-    const rawData = getRawEquipmentData(equipmentId);
-    if (!rawData || !rawData.maintenance_team_id) {
-      return 'Unassigned';
-    }
+  // Get team technician name from API data
+  const getTeamTechnician = (maintenanceTeamId?: string) => {
+    if (!maintenanceTeamId) return 'Unassigned';
     
-    const teamId = rawData.maintenance_team_id;
-    
-    // Find technicians for this team from raw data
-    const teamTechnicians = (techniciansRawData as any[]).filter(
-      (t: any) => t.team_id === teamId && t.is_active === true
+    // Find technicians for this team
+    const teamTechnicians = technicians.filter(
+      (t: any) => t.team_id === maintenanceTeamId && t.is_active === true
     );
     
     if (teamTechnicians.length === 0) {
@@ -75,9 +74,7 @@ export default function EquipmentPage() {
     
     // Get the first technician's user info
     const firstTech = teamTechnicians[0];
-    const techUser = (usersRawData as any[]).find((u: any) => u.id === firstTech.user_id);
-    
-    return techUser?.name || 'Unknown';
+    return technicianToUserMap.get(firstTech.id) || 'Unknown';
   };
 
   return (
@@ -169,9 +166,7 @@ export default function EquipmentPage() {
                   </td>
                 </tr>
               ) : (
-                equipment.map((item: Equipment) => {
-                  const rawData = getRawEquipmentData(item.id);
-                  
+                equipment.map((item: any) => {
                   return (
                     <tr
                       key={item.id}
@@ -185,7 +180,7 @@ export default function EquipmentPage() {
                       </td>
                       <td className="px-6 py-4">
                         <div className="text-sm text-[#a0a0a0]">
-                          {rawData?.assigned_employee || 'Unassigned'}
+                          {item.assigned_employee || 'Unassigned'}
                         </div>
                       </td>
                       <td className="px-6 py-4">
@@ -200,12 +195,12 @@ export default function EquipmentPage() {
                       </td>
                       <td className="px-6 py-4">
                         <div className="text-sm text-[#a0a0a0]">
-                          {getTeamTechnician(item.id)}
+                          {getTeamTechnician(item.maintenance_team_id)}
                         </div>
                       </td>
                       <td className="px-6 py-4">
                         <div className="text-sm text-[#a0a0a0]">
-                          {item.model || rawData?.category || 'N/A'}
+                          {item.category || 'N/A'}
                         </div>
                       </td>
                       <td className="px-6 py-4">

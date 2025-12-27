@@ -1,32 +1,77 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
 import { useAuthStore } from '@/store/authStore';
-import techniciansRawData from '../../../../data/technicians.json';
-import usersRawData from '../../../../data/users.json';
-import maintenanceTeamsRawData from '../../../../data/maintenance_teams.json';
+import { apiClient } from '@/lib/api';
+import { useMemo } from 'react';
+import { permissions } from '@/lib/permissions';
 
 export default function TechniciansPage() {
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
 
-  // Use raw data directly
-  const technicians = techniciansRawData;
+  // Check if user has access to technicians page
+  if (!user || !permissions.canAccessTechnicians(user.role)) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-black">
+        <div className="text-center">
+          <h1 className="text-xl font-semibold text-white mb-2">Access Denied</h1>
+          <p className="text-[#666666]">You don't have permission to access technicians. Only technicians, managers, and administrators can access this page.</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Fetch data from API
+  const { data: techniciansData, isLoading: techniciansLoading } = useQuery({
+    queryKey: ['technicians'],
+    queryFn: () => apiClient.getTechnicians(),
+  });
+
+  const { data: usersData, isLoading: usersLoading } = useQuery({
+    queryKey: ['users'],
+    queryFn: () => apiClient.getUsers(),
+  });
+
+  const { data: teamsData, isLoading: teamsLoading } = useQuery({
+    queryKey: ['maintenance-teams'],
+    queryFn: () => apiClient.getMaintenanceTeams(),
+  });
+
+  const technicians = techniciansData || [];
+  const users = usersData || [];
+  const teams = teamsData || [];
+
+  const isLoading = techniciansLoading || usersLoading || teamsLoading;
+
+  // Create lookup maps for efficient access
+  const userMap = useMemo(() => {
+    const map = new Map<string, any>();
+    users.forEach((u: any) => map.set(u.id, u));
+    return map;
+  }, [users]);
+
+  const teamMap = useMemo(() => {
+    const map = new Map<string, any>();
+    teams.forEach((t: any) => map.set(t.id, t));
+    return map;
+  }, [teams]);
 
   // Get technician user details
   const getTechnicianUser = (userId: string) => {
-    return usersRawData.find((u: any) => u.id === userId);
+    return userMap.get(userId);
   };
 
   // Get team name
   const getTeamName = (teamId: string) => {
-    const team = maintenanceTeamsRawData.find((t: any) => t.id === teamId);
+    const team = teamMap.get(teamId);
     return team?.name || 'N/A';
   };
 
   // Get team specialization
   const getTeamSpecialization = (teamId: string) => {
-    const team = maintenanceTeamsRawData.find((t: any) => t.id === teamId);
+    const team = teamMap.get(teamId);
     return team?.specialization || 'N/A';
   };
 
@@ -40,12 +85,14 @@ export default function TechniciansPage() {
             View and manage technician assignments
           </p>
         </div>
-        <button 
-          onClick={() => router.push('/dashboard/technicians/new')}
-          className="px-4 py-2 bg-white text-black text-sm font-medium rounded hover:bg-[#e0e0e0] transition-colors"
-        >
-          New
-        </button>
+        {user && permissions.canManageTeams(user.role) && (
+          <button 
+            onClick={() => router.push('/dashboard/technicians/new')}
+            className="px-4 py-2 bg-white text-black text-sm font-medium rounded hover:bg-[#e0e0e0] transition-colors"
+          >
+            New
+          </button>
+        )}
       </div>
 
       {/* Search Bar */}
@@ -96,7 +143,17 @@ export default function TechniciansPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-[#1f1f1f]">
-              {technicians.length === 0 ? (
+              {isLoading ? (
+                <tr>
+                  <td colSpan={5} className="px-6 py-8 text-center">
+                    <div className="flex items-center justify-center space-x-2">
+                      <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                      <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                      <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                    </div>
+                  </td>
+                </tr>
+              ) : technicians.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="px-6 py-8 text-center text-[#666666] text-sm">
                     No technicians found
@@ -116,7 +173,7 @@ export default function TechniciansPage() {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center space-x-3">
                           <div className="w-8 h-8 rounded-full bg-[#1f1f1f] flex items-center justify-center text-white text-sm font-medium">
-                            {techUser?.name?.charAt(0) || 'T'}
+                            {techUser?.name?.charAt(0)?.toUpperCase() || 'T'}
                           </div>
                           <span className="text-sm font-medium text-white">
                             {techUser?.name || 'Unknown'}
@@ -129,10 +186,10 @@ export default function TechniciansPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="text-sm text-white">{teamName}</span>
+                        <span className="text-sm text-white">{getTeamName(tech.team_id)}</span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="text-sm text-[#a0a0a0]">{specialization}</span>
+                        <span className="text-sm text-[#a0a0a0]">{getTeamSpecialization(tech.team_id)}</span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {tech.is_active ? (

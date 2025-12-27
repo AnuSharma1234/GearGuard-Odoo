@@ -1,12 +1,9 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import equipmentRawData from '../../../data/equipment.json';
-import departmentsRawData from '../../../data/departments.json';
-import maintenanceTeamsRawData from '../../../data/maintenance_teams.json';
-import techniciansRawData from '../../../data/technicians.json';
-import usersRawData from '../../../data/users.json';
+import { useQuery } from '@tanstack/react-query';
+import { apiClient } from '@/lib/api';
 
 interface EquipmentModalProps {
   equipmentId: string;
@@ -16,7 +13,67 @@ interface EquipmentModalProps {
 export default function EquipmentModal({ equipmentId, onClose }: EquipmentModalProps) {
   const router = useRouter();
   
-  const equipment = equipmentRawData.find((e: any) => e.id === equipmentId);
+  // Fetch equipment data
+  const { data: equipment, isLoading: equipmentLoading } = useQuery({
+    queryKey: ['equipment', equipmentId],
+    queryFn: () => apiClient.getEquipmentById(equipmentId),
+    enabled: !!equipmentId,
+  });
+
+  // Fetch related data
+  const { data: departments } = useQuery({
+    queryKey: ['departments'],
+    queryFn: () => apiClient.getDepartments(),
+  });
+
+  const { data: teams } = useQuery({
+    queryKey: ['maintenance-teams'],
+    queryFn: () => apiClient.getMaintenanceTeams(),
+  });
+
+  const { data: technicians } = useQuery({
+    queryKey: ['technicians'],
+    queryFn: () => apiClient.getTechnicians(),
+  });
+
+  const { data: users } = useQuery({
+    queryKey: ['users'],
+    queryFn: () => apiClient.getUsers(),
+  });
+
+  // Create lookup maps
+  const departmentMap = useMemo(() => {
+    const map = new Map<string, any>();
+    (departments || []).forEach((d: any) => map.set(d.id, d));
+    return map;
+  }, [departments]);
+
+  const teamMap = useMemo(() => {
+    const map = new Map<string, any>();
+    (teams || []).forEach((t: any) => map.set(t.id, t));
+    return map;
+  }, [teams]);
+
+  const userMap = useMemo(() => {
+    const map = new Map<string, any>();
+    (users || []).forEach((u: any) => map.set(u.id, u));
+    return map;
+  }, [users]);
+
+  // Get related data
+  const department = equipment ? departmentMap.get(equipment.department_id) : null;
+  const team = equipment ? teamMap.get(equipment.maintenance_team_id) : null;
+  
+  // Get technician for this team
+  const technician = useMemo(() => {
+    if (!equipment || !technicians || !users) return null;
+    const teamTechnicians = technicians.filter((t: any) => 
+      t.team_id === equipment.maintenance_team_id && t.is_active === true
+    );
+    if (teamTechnicians.length === 0) return null;
+    const firstTech = teamTechnicians[0];
+    return userMap.get(firstTech.user_id) || null;
+  }, [equipment, technicians, users, userMap]);
 
   useEffect(() => {
     // Prevent body scroll when modal is open
@@ -37,17 +94,17 @@ export default function EquipmentModal({ equipmentId, onClose }: EquipmentModalP
     return () => window.removeEventListener('keydown', handleEscape);
   }, [onClose]);
 
-  if (!equipment) {
-    return null;
+  if (equipmentLoading || !equipment) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+        <div className="flex items-center space-x-2">
+          <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+          <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+          <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+        </div>
+      </div>
+    );
   }
-
-  // Get related data
-  const department = departmentsRawData.find((d: any) => d.id === equipment.department_id);
-  const team = maintenanceTeamsRawData.find((t: any) => t.id === equipment.maintenance_team_id);
-  
-  // Get technician
-  const teamTechnicians = techniciansRawData.filter((t: any) => t.team_id === equipment.maintenance_team_id && t.is_active);
-  const technician = teamTechnicians.length > 0 ? usersRawData.find((u: any) => u.id === teamTechnicians[0].user_id) : null;
 
   const handleEdit = () => {
     router.push(`/dashboard/equipment/${equipmentId}/edit`);
@@ -119,7 +176,7 @@ export default function EquipmentModal({ equipmentId, onClose }: EquipmentModalP
               </div>
               <div>
                 <p className="text-xs text-[#666666] mb-1">Category</p>
-                <p className="text-sm text-white">{equipment.category}</p>
+                <p className="text-sm text-white">{equipment.category || 'N/A'}</p>
               </div>
               <div>
                 <p className="text-xs text-[#666666] mb-1">Location</p>
@@ -138,15 +195,21 @@ export default function EquipmentModal({ equipmentId, onClose }: EquipmentModalP
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <p className="text-xs text-[#666666] mb-1">Purchase Date</p>
-                <p className="text-sm text-white">{new Date(equipment.purchase_date).toLocaleDateString()}</p>
+                <p className="text-sm text-white">
+                  {equipment.purchase_date ? new Date(equipment.purchase_date).toLocaleDateString() : 'N/A'}
+                </p>
               </div>
               <div>
                 <p className="text-xs text-[#666666] mb-1">Warranty Expiry</p>
                 <p className="text-sm text-white">
-                  {new Date(equipment.warranty_expiry).toLocaleDateString()}
-                  {new Date(equipment.warranty_expiry) < new Date() && (
-                    <span className="ml-2 text-xs text-[#ef4444]">(Expired)</span>
-                  )}
+                  {equipment.warranty_expiry ? (
+                    <>
+                      {new Date(equipment.warranty_expiry).toLocaleDateString()}
+                      {new Date(equipment.warranty_expiry) < new Date() && (
+                        <span className="ml-2 text-xs text-[#ef4444]">(Expired)</span>
+                      )}
+                    </>
+                  ) : 'N/A'}
                 </p>
               </div>
             </div>

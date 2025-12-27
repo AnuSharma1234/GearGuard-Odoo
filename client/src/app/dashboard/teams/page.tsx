@@ -5,10 +5,23 @@ import { useRouter } from 'next/navigation';
 import { apiClient } from '@/lib/api';
 import Link from 'next/link';
 import { useAuthStore } from '@/store/authStore';
+import { permissions } from '@/lib/permissions';
 
 export default function TeamsPage() {
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
+
+  // Check if user has access to teams page
+  if (!user || !permissions.canAccessTeams(user.role)) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-black">
+        <div className="text-center">
+          <h1 className="text-xl font-semibold text-white mb-2">Access Denied</h1>
+          <p className="text-[#666666]">You don't have permission to access teams. Only technicians, managers, and administrators can access this page.</p>
+        </div>
+      </div>
+    );
+  }
 
   const { data: teamsData, isLoading: teamsLoading } = useQuery({
     queryKey: ['teams'],
@@ -52,12 +65,14 @@ export default function TeamsPage() {
             Manage maintenance teams and members
           </p>
         </div>
-        <button 
-          onClick={() => router.push('/dashboard/teams/new')}
-          className="px-4 py-2 bg-white text-black text-sm font-medium rounded hover:bg-[#e0e0e0] transition-colors"
-        >
-          New
-        </button>
+        {user && permissions.canManageTeams(user.role) && (
+          <button 
+            onClick={() => router.push('/dashboard/teams/new')}
+            className="px-4 py-2 bg-white text-black text-sm font-medium rounded hover:bg-[#e0e0e0] transition-colors"
+          >
+            New
+          </button>
+        )}
       </div>
 
       {/* Teams Table */}

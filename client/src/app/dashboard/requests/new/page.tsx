@@ -1,13 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/lib/api';
 import { useAuthStore } from '@/store/authStore';
-import equipmentRawData from '../../../../../data/equipment.json';
-import techniciansRawData from '../../../../../data/technicians.json';
-import usersRawData from '../../../../../data/users.json';
 
 export default function NewMaintenanceRequestPage() {
   const router = useRouter();
@@ -28,26 +25,47 @@ export default function NewMaintenanceRequestPage() {
     queryFn: () => apiClient.getEquipment(),
   });
 
+  const { data: techniciansData } = useQuery({
+    queryKey: ['technicians'],
+    queryFn: () => apiClient.getTechnicians(),
+  });
+
+  const { data: usersData } = useQuery({
+    queryKey: ['users'],
+    queryFn: () => apiClient.getUsers(),
+  });
+
   const equipment = equipmentData || [];
+  const technicians = techniciansData || [];
+  const users = usersData || [];
 
   // Get equipment details
-  const selectedEquipment = equipmentRawData.find((e: any) => e.id === formData.equipment_id);
+  const selectedEquipment = useMemo(() => {
+    return equipment.find((e: any) => e.id === formData.equipment_id);
+  }, [equipment, formData.equipment_id]);
+
   const selectedTeamId = selectedEquipment?.maintenance_team_id;
 
+  // Create user lookup map
+  const userMap = useMemo(() => {
+    const map = new Map<string, any>();
+    users.forEach((u: any) => map.set(u.id, u));
+    return map;
+  }, [users]);
+
   // Get technicians for the equipment's team
-  const getTeamTechnicians = (teamId: string) => {
-    const teamTechs = techniciansRawData.filter((t: any) => t.team_id === teamId && t.is_active);
+  const availableTechnicians = useMemo(() => {
+    if (!selectedTeamId) return [];
+    const teamTechs = technicians.filter((t: any) => t.team_id === selectedTeamId && t.is_active);
     return teamTechs.map((tech: any) => {
-      const techUser = usersRawData.find((u: any) => u.id === tech.user_id);
+      const techUser = userMap.get(tech.user_id);
       return {
         id: tech.id,
         name: techUser?.name || 'Unknown',
         user_id: tech.user_id,
       };
     });
-  };
-
-  const availableTechnicians = selectedTeamId ? getTeamTechnicians(selectedTeamId) : [];
+  }, [selectedTeamId, technicians, userMap]);
 
   const createRequestMutation = useMutation({
     mutationFn: (data: any) => apiClient.createMaintenanceRequest(data),
@@ -63,15 +81,12 @@ export default function NewMaintenanceRequestPage() {
     if (!user) return;
 
     const requestData = {
-      title: formData.subject,
+      subject: formData.subject,
       description: formData.description,
       equipment_id: formData.equipment_id,
-      requested_by: user.id,
-      assigned_to: formData.technician_id || undefined,
       request_type: formData.maintenance_type,
-      priority: 'medium',
+      assigned_to: formData.technician_id || undefined,
       scheduled_date: formData.scheduled_date || undefined,
-      stage: 'new',
     };
 
     createRequestMutation.mutate(requestData);

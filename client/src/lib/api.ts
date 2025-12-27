@@ -2,7 +2,7 @@ import axios, { AxiosInstance, AxiosError, InternalAxiosRequestConfig } from 'ax
 import { mockApi } from './mockApi';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-const USE_MOCK_DATA = process.env.NEXT_PUBLIC_USE_MOCK_DATA !== 'false'; // Default to true
+const USE_MOCK_DATA = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true'; // Default to false - require explicit enable for mock data
 
 // Custom API Error class for typed error handling
 export class ApiError extends Error {
@@ -257,7 +257,7 @@ class ApiClient {
     if (USE_MOCK_DATA) {
       return { ...data, id: `880e8400-e29b-41d4-a716-${Date.now()}` };
     }
-    const response = await this.client.post('/technicians', data);
+    const response = await this.client.post('/api/technicians', data);
     return response.data;
   }
 
@@ -274,7 +274,7 @@ class ApiClient {
     if (USE_MOCK_DATA) {
       return { ...data, id: `770e8400-e29b-41d4-a716-${Date.now()}` };
     }
-    const response = await this.client.post('/maintenance-teams', data);
+    const response = await this.client.post('/api/maintenance-teams', data);
     return response.data;
   }
 

@@ -12,6 +12,7 @@ export default function RegisterPage() {
     email: '',
     password: '',
     confirmPassword: '',
+    role: 'user' as 'user' | 'technician' | 'manager' | 'admin',
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -38,6 +39,7 @@ export default function RegisterPage() {
         name: formData.name,
         email: formData.email,
         password: formData.password,
+        role: formData.role,
       });
 
       if (response.access_token) {
@@ -137,6 +139,29 @@ export default function RegisterPage() {
                 placeholder="••••••••"
                 disabled={isLoading}
               />
+            </div>
+
+            {/* Role Selection Field */}
+            <div>
+              <label htmlFor="role" className="block text-sm font-medium text-[#a0a0a0] mb-2">
+                User Type
+              </label>
+              <select
+                id="role"
+                value={formData.role}
+                onChange={(e) => setFormData({ ...formData, role: e.target.value as any })}
+                required
+                className="w-full px-4 py-3 bg-black border border-[#1f1f1f] rounded text-white focus:outline-none focus:border-white transition-colors"
+                disabled={isLoading}
+              >
+                <option value="user">User</option>
+                <option value="technician">Technician</option>
+                <option value="manager">Manager</option>
+                <option value="admin">Administrator</option>
+              </select>
+              <p className="mt-1 text-xs text-[#666666]">
+                Select the type of user you are registering as
+              </p>
             </div>
 
             {/* Sign Up Button */}

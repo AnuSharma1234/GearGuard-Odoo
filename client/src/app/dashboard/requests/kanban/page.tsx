@@ -2,59 +2,35 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
 import { useAuthStore } from '@/store/authStore';
+import { apiClient } from '@/lib/api';
 import StatusBadge from '@/components/dashboard/StatusBadge';
 
-// Import dummy data
-import maintenanceRequestsData from '@/data/maintenance_requests.json';
-import equipmentData from '@/data/equipment.json';
-import techniciansData from '@/data/technicians.json';
-import usersData from '@/data/users.json';
-
-// Types based on schema.txt
+// Types based on API response
 type Stage = 'new' | 'in_progress' | 'repaired' | 'scrap';
 
-interface MaintenanceRequest {
+// Enriched card data - matches MaintenanceRequestDetailResponse from backend
+interface KanbanCard {
   id: string;
   subject: string;
-  description: string;
+  description: string | null;
   request_type: 'corrective' | 'preventive';
   equipment_id: string;
+  equipment_name: string;
+  equipment_category: string;
+  equipment_location: string;
   detected_by: string;
+  detected_by_name: string;
   assigned_to: string | null;
-  scheduled_date: string;
+  assigned_to_name: string | null;
+  maintenance_team_id: string;
+  maintenance_team_name: string;
+  scheduled_date: string | null;
   stage: Stage;
   overdue: boolean;
+  is_overdue: boolean;
   created_at: string;
-}
-
-interface Equipment {
-  id: string;
-  name: string;
-  serial_number: string;
-  category: string;
-  status: string;
-}
-
-interface Technician {
-  id: string;
-  user_id: string;
-  team_id: string;
-  is_active: boolean;
-}
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: 'admin' | 'manager' | 'technician' | 'user';
-  is_active: boolean;
-}
-
-// Enriched card data with joins
-interface KanbanCard extends MaintenanceRequest {
-  equipmentName: string;
-  technicianName: string;
 }
 
 // Define columns based on schema.txt stage enum
@@ -69,39 +45,48 @@ export default function KanbanPage() {
   const router = useRouter();
   const { user } = useAuthStore();
 
-  // Local state for requests (simulates optimistic updates)
+  // Fetch maintenance requests from API
+  const { data: requestsData, isLoading } = useQuery({
+    queryKey: ['maintenance-requests'],
+    queryFn: () => apiClient.getMaintenanceRequests(),
+  });
+
+  // Local state for requests (for optimistic updates when dragging)
   const [requests, setRequests] = useState<KanbanCard[]>([]);
   const [draggedCard, setDraggedCard] = useState<KanbanCard | null>(null);
 
-  // Load and join data on mount
+  // Update local state when API data loads
   useEffect(() => {
-    const enrichedRequests = (maintenanceRequestsData as MaintenanceRequest[]).map((req) => {
-      // Join with equipment
-      const equipment = (equipmentData as Equipment[]).find((e) => e.id === req.equipment_id);
-      const equipmentName = equipment?.name || 'Unknown Equipment';
+    if (requestsData) {
+      // Transform API response to KanbanCard format
+      const enrichedRequests: KanbanCard[] = requestsData.map((req: any) => ({
+        id: req.id,
+        subject: req.subject,
+        description: req.description,
+        request_type: req.request_type,
+        equipment_id: req.equipment_id,
+        equipment_name: req.equipment_name,
+        equipment_category: req.equipment_category,
+        equipment_location: req.equipment_location,
+        detected_by: req.detected_by,
+        detected_by_name: req.detected_by_name,
+        assigned_to: req.assigned_to,
+        assigned_to_name: req.assigned_to_name || 'Unassigned',
+        maintenance_team_id: req.maintenance_team_id,
+        maintenance_team_name: req.maintenance_team_name,
+        scheduled_date: req.scheduled_date,
+        stage: req.stage,
+        overdue: req.overdue,
+        is_overdue: req.is_overdue,
+        created_at: req.created_at,
+      }));
 
-      // Join with technician → user
-      let technicianName = 'Unassigned';
-      if (req.assigned_to) {
-        const technician = (techniciansData as Technician[]).find((t) => t.id === req.assigned_to);
-        if (technician) {
-          const techUser = (usersData as User[]).find((u) => u.id === technician.user_id);
-          technicianName = techUser?.name || 'Unknown Technician';
-        }
-      }
+      // Sort by created_at ASC
+      enrichedRequests.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
 
-      return {
-        ...req,
-        equipmentName,
-        technicianName,
-      };
-    });
-
-    // Sort by created_at ASC
-    enrichedRequests.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
-
-    setRequests(enrichedRequests);
-  }, []);
+      setRequests(enrichedRequests);
+    }
+  }, [requestsData]);
 
   // Role-based permissions
   const canDragToStage = (targetStage: Stage): boolean => {
@@ -135,7 +120,7 @@ export default function KanbanPage() {
     e.preventDefault();
   };
 
-  const handleDrop = (targetStage: Stage) => {
+  const handleDrop = async (targetStage: Stage) => {
     if (!draggedCard) return;
 
     // Check permission
@@ -146,6 +131,7 @@ export default function KanbanPage() {
     }
 
     // Optimistic update
+    const originalStage = draggedCard.stage;
     setRequests((prev) =>
       prev.map((req) =>
         req.id === draggedCard.id
@@ -155,6 +141,21 @@ export default function KanbanPage() {
     );
 
     setDraggedCard(null);
+
+    // Update on backend
+    try {
+      await apiClient.updateRequestStage(draggedCard.id, targetStage);
+    } catch (error) {
+      // Revert optimistic update on error
+      setRequests((prev) =>
+        prev.map((req) =>
+          req.id === draggedCard.id
+            ? { ...req, stage: originalStage }
+            : req
+        )
+      );
+      alert('Failed to update request stage. Please try again.');
+    }
   };
 
   const handleDragEnd = () => {
@@ -211,7 +212,11 @@ export default function KanbanPage() {
 
               {/* Column Body - Scrollable */}
               <div className="p-4 space-y-3 overflow-y-auto max-h-[calc(100vh-250px)]">
-                {cards.length === 0 ? (
+                {isLoading ? (
+                  <div className="text-center py-8 text-zinc-500 text-sm">
+                    Loading...
+                  </div>
+                ) : cards.length === 0 ? (
                   <div className="text-center py-8 text-zinc-500 text-sm">
                     No requests in this stage
                   </div>
@@ -232,7 +237,7 @@ export default function KanbanPage() {
                       `}
                     >
                       {/* Overdue Indicator */}
-                      {card.overdue && (
+                      {card.is_overdue && (
                         <div className="flex items-center gap-1 mb-2">
                           <svg
                             className="w-4 h-4 text-red-500"
@@ -256,14 +261,14 @@ export default function KanbanPage() {
 
                       {/* Equipment Name */}
                       <div className="text-xs text-zinc-400 mb-2">
-                        <span className="font-medium">Equipment:</span> {card.equipmentName}
+                        <span className="font-medium">Equipment:</span> {card.equipment_name}
                       </div>
 
                       {/* Assigned Technician */}
                       <div className="text-xs text-zinc-400 mb-3">
                         <span className="font-medium">Assigned to:</span>{' '}
                         <span className={card.assigned_to ? 'text-zinc-300' : 'text-zinc-500 italic'}>
-                          {card.technicianName}
+                          {card.assigned_to_name || 'Unassigned'}
                         </span>
                       </div>
 
