@@ -1,0 +1,22 @@
+[
+  {
+    "id": "660e8400-e29b-41d4-a716-446655440001",
+    "name": "Mechanical Engineering",
+    "description": "Department responsible for mechanical equipment maintenance and repairs"
+  },
+  {
+    "id": "660e8400-e29b-41d4-a716-446655440002",
+    "name": "Electrical Systems",
+    "description": "Department handling electrical equipment and power systems"
+  },
+  {
+    "id": "660e8400-e29b-41d4-a716-446655440003",
+    "name": "Hydraulics",
+    "description": "Department specialized in hydraulic systems and fluid machinery"
+  },
+  {
+    "id": "660e8400-e29b-41d4-a716-446655440004",
+    "name": "Production",
+    "description": "Main production department equipment maintenance"
+  }
+]

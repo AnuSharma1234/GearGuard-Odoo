@@ -1,0 +1,67 @@
+[
+  {
+    "id": "aa0e8400-e29b-41d4-a716-446655440001",
+    "subject": "CNC Machine spindle bearing replacement needed",
+    "description": "The spindle bearing is showing signs of wear and increased vibration. Recommend immediate replacement to prevent further damage.",
+    "request_type": "preventive",
+    "equipment_id": "990e8400-e29b-41d4-a716-446655440001",
+    "detected_by": "550e8400-e29b-41d4-a716-446655440004",
+    "assigned_to": "880e8400-e29b-41d4-a716-446655440001",
+    "scheduled_date": "2025-12-30",
+    "stage": "in_progress",
+    "overdue": false,
+    "created_at": "2025-12-15T09:00:00Z"
+  },
+  {
+    "id": "aa0e8400-e29b-41d4-a716-446655440002",
+    "subject": "Hydraulic press pressure gauge malfunction",
+    "description": "Pressure gauge is not reading correctly. Equipment may be running at unsafe pressures. Requires immediate inspection and repair.",
+    "request_type": "corrective",
+    "equipment_id": "990e8400-e29b-41d4-a716-446655440002",
+    "detected_by": "550e8400-e29b-41d4-a716-446655440003",
+    "assigned_to": "880e8400-e29b-41d4-a716-446655440004",
+    "scheduled_date": "2025-12-28",
+    "stage": "new",
+    "overdue": false,
+    "created_at": "2025-12-20T14:30:00Z"
+  },
+  {
+    "id": "aa0e8400-e29b-41d4-a716-446655440003",
+    "subject": "Motor assembly routine maintenance",
+    "description": "Scheduled preventive maintenance for the electric motor assembly. Oil change, filter replacement, and thermal inspection required.",
+    "request_type": "preventive",
+    "equipment_id": "990e8400-e29b-41d4-a716-446655440003",
+    "detected_by": "550e8400-e29b-41d4-a716-446655440001",
+    "assigned_to": "880e8400-e29b-41d4-a716-446655440002",
+    "scheduled_date": "2025-12-29",
+    "stage": "repaired",
+    "overdue": false,
+    "created_at": "2025-12-10T10:15:00Z"
+  },
+  {
+    "id": "aa0e8400-e29b-41d4-a716-446655440004",
+    "subject": "Conveyor belt torn and damaged",
+    "description": "The conveyor belt has a significant tear spanning 30cm. Equipment is currently out of service. Replacement or major repair needed.",
+    "request_type": "corrective",
+    "equipment_id": "990e8400-e29b-41d4-a716-446655440004",
+    "detected_by": "550e8400-e29b-41d4-a716-446655440004",
+    "assigned_to": null,
+    "scheduled_date": "2025-12-31",
+    "stage": "scrap",
+    "overdue": true,
+    "created_at": "2025-12-01T08:00:00Z"
+  },
+  {
+    "id": "aa0e8400-e29b-41d4-a716-446655440005",
+    "subject": "Lathe coolant system maintenance",
+    "description": "Annual coolant system flush and filter replacement for the precision lathe. System is functioning normally but preventive maintenance due.",
+    "request_type": "preventive",
+    "equipment_id": "990e8400-e29b-41d4-a716-446655440005",
+    "detected_by": "550e8400-e29b-41d4-a716-446655440002",
+    "assigned_to": "880e8400-e29b-41d4-a716-446655440001",
+    "scheduled_date": "2026-01-05",
+    "stage": "new",
+    "overdue": false,
+    "created_at": "2025-12-22T11:45:00Z"
+  }
+]

@@ -1,0 +1,115 @@
+# ================================
+# GearGuard Database Schema
+# ================================
+# Format: Logical schema definition
+# All IDs are UUID unless stated otherwise
+
+
+# ----------------
+# USERS
+# ----------------
+TABLE users {
+  id UUID PRIMARY KEY
+  name VARCHAR(255) NOT NULL
+  email VARCHAR(255) UNIQUE NOT NULL
+  role ENUM('admin','manager','technician','user') NOT NULL
+  is_active BOOLEAN DEFAULT true
+  created_at TIMESTAMP DEFAULT now()
+}
+
+
+# ----------------
+# DEPARTMENTS
+# ----------------
+TABLE departments {
+  id UUID PRIMARY KEY
+  name VARCHAR(100) UNIQUE NOT NULL
+  description TEXT
+}
+
+
+# ----------------
+# MAINTENANCE TEAMS
+# ----------------
+TABLE maintenance_teams {
+  id UUID PRIMARY KEY
+  name VARCHAR(100) UNIQUE NOT NULL
+  specialization VARCHAR(100)
+}
+
+
+# ----------------
+# TECHNICIANS
+# ----------------
+TABLE technicians {
+  id UUID PRIMARY KEY
+  user_id UUID NOT NULL REFERENCES users(id)
+  team_id UUID NOT NULL REFERENCES maintenance_teams(id)
+  is_active BOOLEAN DEFAULT true
+}
+
+
+# ----------------
+# EQUIPMENT
+# ----------------
+TABLE equipment {
+  id UUID PRIMARY KEY
+  name VARCHAR(255) NOT NULL
+  serial_number VARCHAR(100) UNIQUE NOT NULL
+  category VARCHAR(100)
+  purchase_date DATE
+  warranty_expiry DATE
+  location VARCHAR(255)
+  department_id UUID REFERENCES departments(id)
+  assigned_employee VARCHAR(255)
+  maintenance_team_id UUID NOT NULL REFERENCES maintenance_teams(id)
+  status ENUM('active','scrapped') DEFAULT 'active'
+}
+
+
+# ----------------
+# MAINTENANCE REQUESTS
+# ----------------
+TABLE maintenance_requests {
+  id UUID PRIMARY KEY
+  subject VARCHAR(255) NOT NULL
+  description TEXT
+  request_type ENUM('corrective','preventive') NOT NULL
+  equipment_id UUID NOT NULL REFERENCES equipment(id)
+  detected_by UUID NOT NULL REFERENCES users(id)
+  assigned_to UUID REFERENCES technicians(id)
+  scheduled_date DATE
+  stage ENUM('new','in_progress','repaired','scrap') DEFAULT 'new'
+  overdue BOOLEAN DEFAULT false
+  created_at TIMESTAMP DEFAULT now()
+}
+
+
+# ----------------
+# TIME LOGS
+# ----------------
+TABLE time_logs {
+  id UUID PRIMARY KEY
+  request_id UUID NOT NULL REFERENCES maintenance_requests(id)
+  technician_id UUID NOT NULL REFERENCES technicians(id)
+  hours_spent DECIMAL(5,2) NOT NULL
+  logged_at TIMESTAMP DEFAULT now()
+}
+
+
+# ----------------
+# AUDIT LOGS (OPTIONAL)
+# ----------------
+TABLE audit_logs {
+  id UUID PRIMARY KEY
+  request_id UUID REFERENCES maintenance_requests(id)
+  old_stage ENUM('new','in_progress','repaired','scrap')
+  new_stage ENUM('new','in_progress','repaired','scrap')
+  changed_by UUID REFERENCES users(id)
+  changed_at TIMESTAMP DEFAULT now()
+}
+
+
+# ================================
+# END OF SCHEMA
+# ================================
