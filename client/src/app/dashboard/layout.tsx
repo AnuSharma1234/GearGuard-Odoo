@@ -26,8 +26,12 @@ export default function DashboardLayout({
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="text-gray-600">Loading...</div>
+      <div className="flex min-h-screen items-center justify-center bg-black">
+        <div className="flex items-center space-x-2">
+          <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+          <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+          <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+        </div>
       </div>
     );
   }
@@ -39,10 +43,10 @@ export default function DashboardLayout({
   // Check if user has access to dashboard
   if (!permissions.canAccessDashboard(user.role)) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-black">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Access Denied</h1>
-          <p className="text-gray-600">You don't have permission to access this area.</p>
+          <h1 className="text-xl font-semibold text-white mb-2">Access Denied</h1>
+          <p className="text-[#666666]">You don't have permission to access this area.</p>
         </div>
       </div>
     );
@@ -57,4 +61,3 @@ export default function DashboardLayout({
     </div>
   );
 }
-

@@ -28,26 +28,25 @@ INSERT INTO maintenance_teams (id, name, specialization) VALUES
   ('dddddddd-dddd-dddd-dddd-dddddddddddd', 'Material Handling', 'Forklifts and Conveyors');
 
 -- Insert Users
--- Note: In production, use proper password hashing (bcrypt, argon2, etc.)
--- These are placeholder hashes - replace with actual hashed passwords
+-- Password for all test users: password123
 INSERT INTO users (id, name, email, role, password_hash, is_active) VALUES
   -- Admin
-  ('00000000-0000-0000-0000-000000000001', 'Alice Admin', 'alice.admin@gearguard.com', 'admin', '$2b$12$placeholder_hash_admin', true),
+  ('00000000-0000-0000-0000-000000000001', 'Alice Admin', 'alice.admin@gearguard.com', 'admin', '$2b$12$CTdIiUqKJLLzclA.kqaDi.ExLimLbDXTvo2vNcomhgCw1.OLVZZ.u', true),
   
   -- Managers
-  ('00000000-0000-0000-0000-000000000002', 'Bob Manager', 'bob.manager@gearguard.com', 'manager', '$2b$12$placeholder_hash_manager', true),
-  ('00000000-0000-0000-0000-000000000003', 'Carol Manager', 'carol.manager@gearguard.com', 'manager', '$2b$12$placeholder_hash_manager2', true),
+  ('00000000-0000-0000-0000-000000000002', 'Bob Manager', 'bob.manager@gearguard.com', 'manager', '$2b$12$duBaM2YI0T43TQ9ariccXOoBl/7cSH7PyyM9jqhFd0E9f6LAGH9lW', true),
+  ('00000000-0000-0000-0000-000000000003', 'Carol Manager', 'carol.manager@gearguard.com', 'manager', '$2b$12$EabJRMsSB3wtlnBNDgZveO175xFDiHRiDnpgwGAahUDPdTkfqMe.m', true),
   
   -- Technicians
-  ('00000000-0000-0000-0000-000000000010', 'Dave Technician', 'dave.tech@gearguard.com', 'technician', '$2b$12$placeholder_hash_tech1', true),
-  ('00000000-0000-0000-0000-000000000011', 'Eve Technician', 'eve.tech@gearguard.com', 'technician', '$2b$12$placeholder_hash_tech2', true),
-  ('00000000-0000-0000-0000-000000000012', 'Frank Technician', 'frank.tech@gearguard.com', 'technician', '$2b$12$placeholder_hash_tech3', true),
-  ('00000000-0000-0000-0000-000000000013', 'Grace Technician', 'grace.tech@gearguard.com', 'technician', '$2b$12$placeholder_hash_tech4', true),
+  ('00000000-0000-0000-0000-000000000010', 'Dave Technician', 'dave.tech@gearguard.com', 'technician', '$2b$12$0vnrdB/v6rjMmbmNFCvlZ.vi94PNjFBpSE20D7YzZYxxGwOMgZO3C', true),
+  ('00000000-0000-0000-0000-000000000011', 'Eve Technician', 'eve.tech@gearguard.com', 'technician', '$2b$12$jefWFrHH3HNYpCHuY8Stv.z3UVXwpSc.QDuPiFek9dCFv43S2r7l2', true),
+  ('00000000-0000-0000-0000-000000000012', 'Frank Technician', 'frank.tech@gearguard.com', 'technician', '$2b$12$oYYrgHaB/q5fU5FB0xW1yuoAgsNldIeQAKt6eUwleOPnWStUGxO7q', true),
+  ('00000000-0000-0000-0000-000000000013', 'Grace Technician', 'grace.tech@gearguard.com', 'technician', '$2b$12$eyfv1HjRW9lw6jOq3wBgxOsQv3Yh/p4RXqnAga.K42/B1gwLBkgAy', true),
   
   -- Regular Users
-  ('00000000-0000-0000-0000-000000000020', 'Henry User', 'henry.user@gearguard.com', 'user', '$2b$12$placeholder_hash_user1', true),
-  ('00000000-0000-0000-0000-000000000021', 'Iris User', 'iris.user@gearguard.com', 'user', '$2b$12$placeholder_hash_user2', true),
-  ('00000000-0000-0000-0000-000000000022', 'Jack User', 'jack.user@gearguard.com', 'user', '$2b$12$placeholder_hash_user3', true);
+  ('00000000-0000-0000-0000-000000000020', 'Henry User', 'henry.user@gearguard.com', 'user', '$2b$12$SP0X2pTXLL9nLjrnAYHYY.BXk6.Wwm2bXtTHK8OISZYFguTUuNI6m', true),
+  ('00000000-0000-0000-0000-000000000021', 'Iris User', 'iris.user@gearguard.com', 'user', '$2b$12$qKFJeXsWvmHftVk2jD4buu36vIfxSJy9S3vz7w/ZI81oQjMc8wv9O', true),
+  ('00000000-0000-0000-0000-000000000022', 'Jack User', 'jack.user@gearguard.com', 'user', '$2b$12$AAgqAnj..cOJDnenOOOagO6uzZ8R6m9akYCOM5HjoG5jzDKltcXGC', true);
 
 -- Insert Technicians (mapping to technician users)
 INSERT INTO technicians (id, user_id, team_id, is_active) VALUES
@@ -83,48 +82,48 @@ INSERT INTO equipment (id, name, serial_number, category, purchase_date, warrant
 -- Insert Maintenance Requests
 INSERT INTO maintenance_requests (id, subject, description, request_type, equipment_id, detected_by, assigned_to, scheduled_date, stage, overdue, created_at) VALUES
   -- Active Corrective Requests
-  ('r0000000-0000-0000-0000-000000000001', 'Server not responding', 'Dell Server R740 is not responding to ping. System appears to be down.', 'corrective', 'e0000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000020', '10000000-0000-0000-0000-000000000001', NULL, 'in_progress', false, '2025-12-26 09:30:00'),
-  ('r0000000-0000-0000-0000-000000000002', 'CNC machine unusual noise', 'CNC Machine making grinding noise during operation. Needs inspection.', 'corrective', 'e0000000-0000-0000-0000-000000000010', '00000000-0000-0000-0000-000000000021', '10000000-0000-0000-0000-000000000002', NULL, 'new', false, '2025-12-27 08:15:00'),
-  ('r0000000-0000-0000-0000-000000000003', 'Elevator door malfunction', 'Elevator doors not closing properly on Floor 3.', 'corrective', 'e0000000-0000-0000-0000-000000000022', '00000000-0000-0000-0000-000000000022', '10000000-0000-0000-0000-000000000003', NULL, 'new', false, '2025-12-27 10:00:00'),
+  ('a0000000-0000-0000-0000-000000000001', 'Server not responding', 'Dell Server R740 is not responding to ping. System appears to be down.', 'corrective', 'e0000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000020', '10000000-0000-0000-0000-000000000001', NULL, 'in_progress', false, '2025-12-26 09:30:00'),
+  ('a0000000-0000-0000-0000-000000000002', 'CNC machine unusual noise', 'CNC Machine making grinding noise during operation. Needs inspection.', 'corrective', 'e0000000-0000-0000-0000-000000000010', '00000000-0000-0000-0000-000000000021', '10000000-0000-0000-0000-000000000002', NULL, 'new', false, '2025-12-27 08:15:00'),
+  ('a0000000-0000-0000-0000-000000000003', 'Elevator door malfunction', 'Elevator doors not closing properly on Floor 3.', 'corrective', 'e0000000-0000-0000-0000-000000000022', '00000000-0000-0000-0000-000000000022', '10000000-0000-0000-0000-000000000003', NULL, 'new', false, '2025-12-27 10:00:00'),
   
   -- Preventive Maintenance Requests
-  ('r0000000-0000-0000-0000-000000000010', 'Quarterly server maintenance', 'Scheduled quarterly maintenance for server room equipment.', 'preventive', 'e0000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000002', '10000000-0000-0000-0000-000000000001', '2025-12-30', 'new', false, '2025-12-20 14:00:00'),
-  ('r0000000-0000-0000-0000-000000000011', 'HVAC annual inspection', 'Annual inspection and filter replacement for HVAC system.', 'preventive', 'e0000000-0000-0000-0000-000000000020', '00000000-0000-0000-0000-000000000003', '10000000-0000-0000-0000-000000000003', '2025-12-28', 'new', false, '2025-12-15 10:00:00'),
-  ('r0000000-0000-0000-0000-000000000012', 'Forklift monthly service', 'Monthly service check for forklift - oil, brakes, hydraulics.', 'preventive', 'e0000000-0000-0000-0000-000000000030', '00000000-0000-0000-0000-000000000002', '10000000-0000-0000-0000-000000000004', '2026-01-05', 'new', false, '2025-12-25 16:00:00'),
+  ('a0000000-0000-0000-0000-000000000010', 'Quarterly server maintenance', 'Scheduled quarterly maintenance for server room equipment.', 'preventive', 'e0000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000002', '10000000-0000-0000-0000-000000000001', '2025-12-30', 'new', false, '2025-12-20 14:00:00'),
+  ('a0000000-0000-0000-0000-000000000011', 'HVAC annual inspection', 'Annual inspection and filter replacement for HVAC system.', 'preventive', 'e0000000-0000-0000-0000-000000000020', '00000000-0000-0000-0000-000000000003', '10000000-0000-0000-0000-000000000003', '2025-12-28', 'new', false, '2025-12-15 10:00:00'),
+  ('a0000000-0000-0000-0000-000000000012', 'Forklift monthly service', 'Monthly service check for forklift - oil, brakes, hydraulics.', 'preventive', 'e0000000-0000-0000-0000-000000000030', '00000000-0000-0000-0000-000000000002', '10000000-0000-0000-0000-000000000004', '2026-01-05', 'new', false, '2025-12-25 16:00:00'),
   
   -- Completed Requests
-  ('r0000000-0000-0000-0000-000000000020', 'Network switch firmware update', 'Update firmware to latest version for security patches.', 'preventive', 'e0000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000002', '10000000-0000-0000-0000-000000000001', '2025-12-20', 'repaired', false, '2025-12-15 09:00:00'),
-  ('r0000000-0000-0000-0000-000000000021', 'Conveyor belt replacement', 'Replace worn conveyor belt on assembly line.', 'corrective', 'e0000000-0000-0000-0000-000000000012', '00000000-0000-0000-0000-000000000021', '10000000-0000-0000-0000-000000000002', NULL, 'repaired', false, '2025-12-10 11:30:00');
+  ('a0000000-0000-0000-0000-000000000020', 'Network switch firmware update', 'Update firmware to latest version for security patches.', 'preventive', 'e0000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000002', '10000000-0000-0000-0000-000000000001', '2025-12-20', 'repaired', false, '2025-12-15 09:00:00'),
+  ('a0000000-0000-0000-0000-000000000021', 'Conveyor belt replacement', 'Replace worn conveyor belt on assembly line.', 'corrective', 'e0000000-0000-0000-0000-000000000012', '00000000-0000-0000-0000-000000000021', '10000000-0000-0000-0000-000000000002', NULL, 'repaired', false, '2025-12-10 11:30:00');
 
 -- Insert Time Logs
 INSERT INTO time_logs (request_id, technician_id, hours_spent, logged_at) VALUES
   -- Server issue (in progress)
-  ('r0000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000001', 2.5, '2025-12-26 10:00:00'),
-  ('r0000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000001', 1.75, '2025-12-26 14:30:00'),
+  ('a0000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000001', 2.5, '2025-12-26 10:00:00'),
+  ('a0000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000001', 1.75, '2025-12-26 14:30:00'),
   
   -- Completed network switch update
-  ('r0000000-0000-0000-0000-000000000020', '10000000-0000-0000-0000-000000000001', 3.0, '2025-12-20 10:00:00'),
-  ('r0000000-0000-0000-0000-000000000020', '10000000-0000-0000-0000-000000000001', 1.5, '2025-12-20 15:00:00'),
+  ('a0000000-0000-0000-0000-000000000020', '10000000-0000-0000-0000-000000000001', 3.0, '2025-12-20 10:00:00'),
+  ('a0000000-0000-0000-0000-000000000020', '10000000-0000-0000-0000-000000000001', 1.5, '2025-12-20 15:00:00'),
   
   -- Completed conveyor belt replacement
-  ('r0000000-0000-0000-0000-000000000021', '10000000-0000-0000-0000-000000000002', 4.0, '2025-12-10 12:00:00'),
-  ('r0000000-0000-0000-0000-000000000021', '10000000-0000-0000-0000-000000000002', 3.5, '2025-12-11 09:00:00');
+  ('a0000000-0000-0000-0000-000000000021', '10000000-0000-0000-0000-000000000002', 4.0, '2025-12-10 12:00:00'),
+  ('a0000000-0000-0000-0000-000000000021', '10000000-0000-0000-0000-000000000002', 3.5, '2025-12-11 09:00:00');
 
 -- Insert Request Audit Logs
 INSERT INTO request_audit_logs (request_id, old_stage, new_stage, changed_by, changed_at) VALUES
   -- Server issue progress
-  ('r0000000-0000-0000-0000-000000000001', NULL, 'new', '00000000-0000-0000-0000-000000000020', '2025-12-26 09:30:00'),
-  ('r0000000-0000-0000-0000-000000000001', 'new', 'in_progress', '00000000-0000-0000-0000-000000000010', '2025-12-26 09:45:00'),
+  ('a0000000-0000-0000-0000-000000000001', NULL, 'new', '00000000-0000-0000-0000-000000000020', '2025-12-26 09:30:00'),
+  ('a0000000-0000-0000-0000-000000000001', 'new', 'in_progress', '00000000-0000-0000-0000-000000000010', '2025-12-26 09:45:00'),
   
   -- Network switch update completion
-  ('r0000000-0000-0000-0000-000000000020', NULL, 'new', '00000000-0000-0000-0000-000000000002', '2025-12-15 09:00:00'),
-  ('r0000000-0000-0000-0000-000000000020', 'new', 'in_progress', '00000000-0000-0000-0000-000000000010', '2025-12-20 09:30:00'),
-  ('r0000000-0000-0000-0000-000000000020', 'in_progress', 'repaired', '00000000-0000-0000-0000-000000000010', '2025-12-20 16:45:00'),
+  ('a0000000-0000-0000-0000-000000000020', NULL, 'new', '00000000-0000-0000-0000-000000000002', '2025-12-15 09:00:00'),
+  ('a0000000-0000-0000-0000-000000000020', 'new', 'in_progress', '00000000-0000-0000-0000-000000000010', '2025-12-20 09:30:00'),
+  ('a0000000-0000-0000-0000-000000000020', 'in_progress', 'repaired', '00000000-0000-0000-0000-000000000010', '2025-12-20 16:45:00'),
   
   -- Conveyor belt replacement completion
-  ('r0000000-0000-0000-0000-000000000021', NULL, 'new', '00000000-0000-0000-0000-000000000021', '2025-12-10 11:30:00'),
-  ('r0000000-0000-0000-0000-000000000021', 'new', 'in_progress', '00000000-0000-0000-0000-000000000011', '2025-12-10 11:45:00'),
-  ('r0000000-0000-0000-0000-000000000021', 'in_progress', 'repaired', '00000000-0000-0000-0000-000000000011', '2025-12-11 14:30:00');
+  ('a0000000-0000-0000-0000-000000000021', NULL, 'new', '00000000-0000-0000-0000-000000000021', '2025-12-10 11:30:00'),
+  ('a0000000-0000-0000-0000-000000000021', 'new', 'in_progress', '00000000-0000-0000-0000-000000000011', '2025-12-10 11:45:00'),
+  ('a0000000-0000-0000-0000-000000000021', 'in_progress', 'repaired', '00000000-0000-0000-0000-000000000011', '2025-12-11 14:30:00');
 
 COMMIT;
 

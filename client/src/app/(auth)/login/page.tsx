@@ -3,104 +3,105 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/authStore';
-import { auth } from '@/lib/auth';
-import usersData from '../../../../data/users.json';
-import { User } from '@/types/users';
+import Link from 'next/link';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [testUserId, setTestUserId] = useState((usersData as User[])[0]?.id ?? '');
+  const [isLoading, setIsLoading] = useState(false);
   const login = useAuthStore((state) => state.login);
-  const setUser = useAuthStore((state) => state.setUser);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setIsLoading(true);
+
     try {
       await login(email, password);
       router.push('/dashboard');
     } catch (err: any) {
-      setError(err.response?.data?.detail || 'Login failed');
+      setError(err.response?.data?.detail || 'Login failed. Please check your credentials.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-zinc-950 text-zinc-100 px-4">
-      <div className="w-full max-w-lg space-y-6 bg-zinc-900/60 border border-zinc-800 rounded-lg p-6">
-        <div>
-          <h1 className="text-2xl font-semibold">Sign in</h1>
-          <p className="text-sm text-zinc-400">Use your credentials or enable test access.</p>
+    <div className="min-h-screen bg-black flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        {/* Logo/Brand */}
+        <div className="text-center mb-12">
+          <h1 className="text-2xl font-semibold text-white tracking-tight mb-2">
+            GearGuard
+          </h1>
+          <p className="text-[#666666] text-sm">Sign in to continue</p>
         </div>
 
-        {error && <p className="text-sm text-red-400">{error}</p>}
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-1">
-            <label className="text-sm text-zinc-300">Email</label>
-            <input
-              className="w-full rounded-md border border-zinc-800 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:ring-2 focus:ring-sky-700"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-          <div className="space-y-1">
-            <label className="text-sm text-zinc-300">Password</label>
-            <input
-              className="w-full rounded-md border border-zinc-800 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:ring-2 focus:ring-sky-700"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          <button
-            type="submit"
-            className="w-full rounded-md bg-sky-700 hover:bg-sky-600 text-sm font-medium px-3 py-2"
-          >
-            Sign in
-          </button>
-        </form>
-
-        <div className="border-t border-zinc-800 pt-4">
-          <div className="flex items-center justify-between mb-2">
-            <div>
-              <p className="text-sm font-medium text-zinc-200">Test access (no backend)</p>
-              <p className="text-xs text-zinc-400">Select a dummy user to bypass auth for testing.</p>
+        {/* Login Form Card */}
+        <div className="bg-[#0a0a0a] border border-[#1f1f1f] rounded-lg p-8">
+          {error && (
+            <div className="mb-6 p-3 bg-[#141414] border border-[#ef4444] rounded text-[#ef4444] text-sm">
+              {error}
             </div>
-          </div>
-          <div className="space-y-3">
-            <select
-              value={testUserId}
-              onChange={(e) => setTestUserId(e.target.value)}
-              className="w-full rounded-md border border-zinc-800 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:ring-2 focus:ring-amber-700"
-            >
-              {(usersData as User[]).map((u) => (
-                <option key={u.id} value={u.id}>
-                  {u.name} ({u.role})
-                </option>
-              ))}
-            </select>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Email Field */}
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-[#a0a0a0] mb-2">
+                Email
+              </label>
+              <input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="w-full px-4 py-3 bg-black border border-[#1f1f1f] rounded text-white placeholder-[#666666] focus:outline-none focus:border-white transition-colors"
+                placeholder="you@example.com"
+                disabled={isLoading}
+              />
+            </div>
+
+            {/* Password Field */}
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-[#a0a0a0] mb-2">
+                Password
+              </label>
+              <input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="w-full px-4 py-3 bg-black border border-[#1f1f1f] rounded text-white placeholder-[#666666] focus:outline-none focus:border-white transition-colors"
+                placeholder="••••••••"
+                disabled={isLoading}
+              />
+            </div>
+
+            {/* Sign In Button */}
             <button
-              onClick={() => {
-                const user = (usersData as User[]).find((u) => u.id === testUserId);
-                if (!user) return;
-                // Set a dummy token and user locally and via cookie so middleware/layout see it
-                auth.setToken('test-token');
-                auth.setUser(user);
-                document.cookie = `auth_token=test-token; path=/;`;
-                setUser(user);
-                router.push('/dashboard');
-              }}
-              className="w-full rounded-md bg-amber-700 hover:bg-amber-600 text-sm font-medium px-3 py-2"
-              type="button"
+              type="submit"
+              disabled={isLoading}
+              className="w-full bg-white text-black py-3 px-4 rounded font-medium hover:bg-[#e0e0e0] focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
-              Enable test access
+              {isLoading ? 'Signing in...' : 'Sign in'}
             </button>
+          </form>
+
+          {/* Footer Links */}
+          <div className="mt-6 text-center text-sm">
+            <span className="text-[#666666]">Don't have an account?</span>
+            {' '}
+            <Link 
+              href="/register" 
+              className="text-white hover:text-[#a0a0a0] transition-colors font-medium"
+            >
+              Sign up
+            </Link>
           </div>
         </div>
       </div>
