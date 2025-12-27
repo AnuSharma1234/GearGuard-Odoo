@@ -16,6 +16,7 @@ export default function Navbar() {
     { href: '/dashboard', label: 'Dashboard', show: permissions.canAccessDashboard(user.role) },
     { href: '/dashboard/equipment', label: 'Equipment', show: permissions.canAccessEquipment(user.role) },
     { href: '/dashboard/requests/kanban', label: 'Requests', show: permissions.canAccessRequests(user.role) },
+    { href: '/dashboard/requests/calendar', label: 'Calendar', show: permissions.canSchedulePreventive(user.role) },
     { href: '/dashboard/teams', label: 'Teams', show: permissions.canAccessTeams(user.role) },
     { href: '/dashboard/technicians', label: 'Technicians', show: permissions.canAccessTechnicians(user.role) },
     { href: '/dashboard/reports', label: 'Reports', show: permissions.canAccessReports(user.role) },

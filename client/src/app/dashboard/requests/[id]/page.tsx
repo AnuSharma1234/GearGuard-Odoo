@@ -1,10 +1,16 @@
 'use client';
 
-import { useParams } from 'next/navigation';
+import { useParams, notFound } from 'next/navigation';
 
 export default function RequestDetailPage() {
   const params = useParams();
   const requestId = params.id as string;
+
+  // Redirect to proper routes if accessing special paths
+  if (requestId === 'calendar' || requestId === 'kanban') {
+    notFound();
+    return null;
+  }
 
   return (
     <div>
