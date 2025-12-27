@@ -3,13 +3,14 @@
 import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import StatusBadge from '@/components/dashboard/StatusBadge';
+import { RequestStage } from '@/lib/dummyData';
 
 interface MaintenanceRequest {
   id: string;
   subject: string;
   equipment_name: string;
   technician_name: string;
-  stage: string;
+  stage: RequestStage;
   created_at: string;
 }
 
