@@ -190,12 +190,28 @@ class ApiClient {
     return response.data;
   }
 
+  async createTechnician(data: { user_id: string; team_id: string; is_active: boolean }) {
+    if (USE_MOCK_DATA) {
+      return { ...data, id: `880e8400-e29b-41d4-a716-${Date.now()}` };
+    }
+    const response = await this.client.post('/technicians', data);
+    return response.data;
+  }
+
   // Team endpoints
   async getTeams() {
     if (USE_MOCK_DATA) {
       return mockApi.getTeams();
     }
     const response = await this.client.get('/maintenance-teams');
+    return response.data;
+  }
+
+  async createMaintenanceTeam(data: { name: string; specialization: string }) {
+    if (USE_MOCK_DATA) {
+      return { ...data, id: `770e8400-e29b-41d4-a716-${Date.now()}` };
+    }
+    const response = await this.client.post('/maintenance-teams', data);
     return response.data;
   }
 
