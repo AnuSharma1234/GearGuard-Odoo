@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuthStore } from '@/store/authStore';
 import { permissions } from '@/lib/permissions';
+import Image from 'next/image';
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -29,14 +30,14 @@ export default function Navbar() {
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
               <Link href="/dashboard" className="text-xl font-bold text-zinc-100">
-                GearGuard
+                <Image src="/logo.png" alt="GearGuard" width={100} height={100} className="w-36" />
               </Link>
             </div>
             <div className="hidden sm:ml-6 sm:flex sm:space-x-6">
               {navItems.map((item) => {
-                const isActive = item.href === '/dashboard' 
-                  ? pathname === item.href 
-                  : pathname.startsWith(item.href);
+                const isActive = item.href === '/dashboard'
+                  ? pathname === '/dashboard'
+                  : pathname === item.href || pathname.startsWith(item.href + '/');
                 
                 return (
                   <Link

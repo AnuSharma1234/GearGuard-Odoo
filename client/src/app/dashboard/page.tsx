@@ -10,6 +10,7 @@ import {
 } from '@/lib/dummyData';
 import StatusBadge from '@/components/dashboard/StatusBadge';
 import QuickActions from '@/components/dashboard/QuickActions';
+import RecentActivityTable from '@/components/dashboard/RecentActivityTable';
 
 // Server Component: loads dummy data and renders the operational overview
 export default async function DashboardPage() {
@@ -60,6 +61,12 @@ export default async function DashboardPage() {
           <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
           <p className="text-sm text-zinc-400">Operational overview of maintenance activities</p>
         </div>
+        <Link
+          href="/dashboard/requests/new"
+          className="px-6 py-2 bg-white text-black text-sm font-medium rounded hover:bg-zinc-200 transition-colors"
+        >
+          New
+        </Link>
       </div>
 
       {/* KPI Cards */}
@@ -77,34 +84,7 @@ export default async function DashboardPage() {
           {recent.length === 0 ? (
             <div className="p-6 text-zinc-400">No recent activity.</div>
           ) : (
-            <table className="w-full text-sm">
-              <thead className="bg-zinc-900 text-zinc-300">
-                <tr>
-                  <Th>Subject</Th>
-                  <Th>Equipment</Th>
-                  <Th>Stage</Th>
-                  <Th>Technician</Th>
-                  <Th>Created</Th>
-                </tr>
-              </thead>
-              <tbody>
-                {recent.map((r) => (
-                  <tr key={r.id} className="border-t border-zinc-800 hover:bg-zinc-900/50">
-                    <Td>
-                      <Link href={`/requests/${r.id}`} className="text-sky-300 hover:text-sky-200">
-                        {r.subject}
-                      </Link>
-                    </Td>
-                    <Td>{r.equipment_name}</Td>
-                    <Td>
-                      <StatusBadge stage={r.stage} />
-                    </Td>
-                    <Td>{r.technician_name}</Td>
-                    <Td>{format(new Date(r.created_at), 'yyyy-MM-dd HH:mm')}</Td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <RecentActivityTable requests={recent} />
           )}
         </div>
       </section>
@@ -125,7 +105,7 @@ export default async function DashboardPage() {
                       </p>
                     </div>
                     <Link
-                      href={`/requests/${o.id}`}
+                      href={`/dashboard/requests/${o.id}/edit`}
                       className="text-sm px-3 py-1.5 rounded-md bg-red-900/40 text-red-100 border border-red-800 hover:bg-red-900/60"
                     >
                       Review
@@ -169,13 +149,5 @@ function StatCard({
       <div className={`mt-2 text-3xl font-semibold ${t.text}`}>{value}</div>
     </div>
   );
-}
-
-function Th({ children }: { children: React.ReactNode }) {
-  return <th className="text-left px-4 py-3 text-xs font-medium uppercase tracking-wider">{children}</th>;
-}
-
-function Td({ children }: { children: React.ReactNode }) {
-  return <td className="px-4 py-3 align-top text-zinc-200">{children}</td>;
 }
 
