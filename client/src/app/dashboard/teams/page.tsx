@@ -1,11 +1,13 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 import { apiClient } from '@/lib/api';
 import Link from 'next/link';
 import { useAuthStore } from '@/store/authStore';
 
 export default function TeamsPage() {
+  const router = useRouter();
   const user = useAuthStore((state) => state.user);
 
   const { data: teamsData, isLoading: teamsLoading } = useQuery({
@@ -50,7 +52,10 @@ export default function TeamsPage() {
             Manage maintenance teams and members
           </p>
         </div>
-        <button className="px-4 py-2 bg-white text-black text-sm font-medium rounded hover:bg-[#e0e0e0] transition-colors">
+        <button 
+          onClick={() => router.push('/dashboard/teams/new')}
+          className="px-4 py-2 bg-white text-black text-sm font-medium rounded hover:bg-[#e0e0e0] transition-colors"
+        >
           New
         </button>
       </div>
