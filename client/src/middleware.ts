@@ -2,25 +2,19 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  const token = request.cookies.get('auth_token') || 
-                request.headers.get('authorization')?.replace('Bearer ', '');
-
   const { pathname } = request.nextUrl;
 
-  // Public routes
+  // Public routes that don't require authentication
   const publicRoutes = ['/login', '/register'];
   const isPublicRoute = publicRoutes.some(route => pathname.startsWith(route));
 
-  // If accessing public route and authenticated, redirect to dashboard
-  if (isPublicRoute && token) {
-    return NextResponse.redirect(new URL('/dashboard', request.url));
+  // Allow access to root path
+  if (pathname === '/') {
+    return NextResponse.next();
   }
 
-  // If accessing protected route and not authenticated, redirect to login
-  if (!isPublicRoute && !token && pathname !== '/') {
-    return NextResponse.redirect(new URL('/login', request.url));
-  }
-
+  // For now, allow all routes since we're using localStorage-based auth
+  // The actual auth check happens client-side in the dashboard layout
   return NextResponse.next();
 }
 
@@ -32,8 +26,8 @@ export const config = {
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
+     * - public files
      */
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|.*\\.png|.*\\.jpg|.*\\.jpeg|.*\\.svg).*)',
   ],
 };
-
