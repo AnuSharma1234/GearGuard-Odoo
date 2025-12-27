@@ -237,7 +237,7 @@ export default function RequestDetailPage() {
   const { equipment, maintenanceTeamName, detectedBy, assignedTechnicianUser } = relations;
 
   return (
-    <div className="space-y-6 text-zinc-100">
+    <div className="space-y-8 text-zinc-100">
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <Link
@@ -253,21 +253,21 @@ export default function RequestDetailPage() {
           )}
         </div>
         <div className="flex items-center gap-2">
-          <span className="inline-flex items-center px-3 py-1 rounded-md text-xs font-semibold bg-zinc-800 border border-zinc-700 uppercase">
+          <span className="inline-flex items-center px-3 py-1 rounded-md text-xs font-semibold bg-[#0f172a] border border-zinc-700 uppercase tracking-[0.12em] text-zinc-200">
             {request.request_type}
           </span>
           <StatusBadge stage={request.stage} />
         </div>
       </div>
 
-      <div className="bg-gradient-to-br from-[#111827] to-[#1f2937] border border-zinc-800 rounded-xl p-6 shadow-lg shadow-black/30 space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+      <div className="bg-gradient-to-br from-[#0f172a] via-[#0b1220] to-[#0a0e1a] border border-[#1f2937] rounded-2xl p-7 shadow-xl shadow-black/40 space-y-6">
+        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
           <div>
             <p className="text-xs uppercase tracking-[0.14em] text-zinc-500">Request</p>
-            <h1 className="text-2xl sm:text-3xl font-semibold text-white mt-1 leading-tight">
+            <h1 className="text-3xl font-semibold text-white mt-1 leading-tight">
               {request.subject}
             </h1>
-            <p className="text-zinc-400 mt-2 max-w-3xl">{request.description}</p>
+            <p className="text-zinc-400 mt-3 max-w-3xl leading-relaxed">{request.description}</p>
           </div>
           <div className="flex flex-col items-end gap-2 text-right">
             <div className="text-xs text-zinc-500">Created</div>
@@ -316,7 +316,7 @@ export default function RequestDetailPage() {
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         <div className="xl:col-span-2 space-y-6">
-          <div className="bg-[#0f1419] border border-zinc-800 rounded-xl p-5 shadow-lg shadow-black/30">
+          <div className="bg-[#0f1419] border border-zinc-800 rounded-2xl p-6 shadow-lg shadow-black/30">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold">Actions</h2>
               <div className="text-xs text-zinc-500">Role-aware controls</div>
@@ -346,7 +346,7 @@ export default function RequestDetailPage() {
                   <select
                     value={reassignTechnicianId}
                     onChange={(e) => setReassignTechnicianId(e.target.value)}
-                    className="w-full bg-zinc-900 border border-zinc-800 rounded-md px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:ring-1 focus:ring-sky-500"
+                    className="w-full bg-zinc-950 border border-zinc-800 rounded-md px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:ring-1 focus:ring-sky-500"
                   >
                     <option value="">Unassigned</option>
                     {techniciansData.map((tech) => {
@@ -358,7 +358,7 @@ export default function RequestDetailPage() {
                       );
                     })}
                   </select>
-                  <div className="mt-2 flex justify-end">
+                  <div className="mt-3 flex justify-end">
                     <ActionButton onClick={handleReassign} disabled={false}>
                       Save Assignment
                     </ActionButton>
@@ -371,7 +371,7 @@ export default function RequestDetailPage() {
                     <select
                       value={overrideStage}
                       onChange={(e) => setOverrideStage(e.target.value as RequestStage)}
-                      className="w-full bg-zinc-900 border border-zinc-800 rounded-md px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:ring-1 focus:ring-sky-500"
+                      className="w-full bg-zinc-950 border border-zinc-800 rounded-md px-3 py-2 text-sm text-zinc-100 focus:outline-none focus:ring-1 focus:ring-sky-500"
                     >
                       {stageOrder.map((stage) => (
                         <option key={stage} value={stage}>
@@ -388,7 +388,7 @@ export default function RequestDetailPage() {
             )}
           </div>
 
-          <div className="bg-[#0f1419] border border-zinc-800 rounded-xl p-5 shadow-lg shadow-black/30">
+          <div className="bg-[#0f1419] border border-zinc-800 rounded-2xl p-6 shadow-lg shadow-black/30">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold">Time Logs</h2>
               <div className="text-xs text-zinc-500">Captured effort</div>
@@ -424,14 +424,16 @@ export default function RequestDetailPage() {
         </div>
 
         <div className="space-y-4">
-          <div className="bg-gradient-to-br from-[#111827] to-[#1f2937] border border-zinc-800 rounded-xl p-5 shadow-lg shadow-black/30">
+          <div className="bg-gradient-to-br from-[#0f172a] via-[#111827] to-[#0b1220] border border-[#1f2937] rounded-2xl p-5 shadow-lg shadow-black/40">
             <h3 className="text-sm uppercase tracking-[0.14em] text-zinc-500">Lifecycle</h3>
             <ol className="mt-3 space-y-2">
               {stageOrder.map((stage) => (
                 <li
                   key={stage}
                   className={`flex items-center gap-3 p-3 rounded-md border ${
-                    request.stage === stage ? 'border-sky-500 bg-sky-500/10' : 'border-zinc-800 bg-zinc-900/30'
+                    request.stage === stage
+                      ? 'border-sky-500 bg-sky-500/10 shadow-inner shadow-sky-900/30'
+                      : 'border-zinc-800 bg-zinc-900/30'
                   }`}
                 >
                   <div className="flex-1">
@@ -451,9 +453,9 @@ export default function RequestDetailPage() {
             </ol>
           </div>
 
-          <div className="bg-[#0f1419] border border-zinc-800 rounded-xl p-5 shadow-lg shadow-black/30">
+          <div className="bg-[#0f1419] border border-zinc-800 rounded-2xl p-6 shadow-lg shadow-black/30">
             <h3 className="text-sm uppercase tracking-[0.14em] text-zinc-500 mb-3">Linked Equipment</h3>
-            <div className="space-y-2">
+            <div className="space-y-3">
               <div className="text-lg font-semibold text-white">{equipment?.name ?? 'Unknown equipment'}</div>
               <div className="text-sm text-zinc-400">Serial: {equipment?.serial_number ?? '—'}</div>
               <div className="text-sm text-zinc-400">Location: {equipment?.location ?? '—'}</div>
@@ -479,9 +481,9 @@ export default function RequestDetailPage() {
 
 function InfoCard({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="bg-[#0f1419] border border-zinc-800 rounded-lg p-4">
-      <p className="text-xs uppercase tracking-[0.12em] text-zinc-500 mb-1">{label}</p>
-      <div className="text-sm text-zinc-100">{children}</div>
+    <div className="bg-[#0f1419] border border-zinc-800 rounded-xl p-4 h-full flex flex-col justify-between shadow-inner shadow-black/10">
+      <p className="text-xs uppercase tracking-[0.12em] text-zinc-500 mb-2">{label}</p>
+      <div className="text-sm text-zinc-100 leading-relaxed">{children}</div>
     </div>
   );
 }
@@ -491,10 +493,10 @@ function ActionButton({ children, disabled, onClick }: { children: React.ReactNo
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`px-4 py-2 rounded-md text-sm font-medium border transition-colors shadow-inner shadow-black/20 ${
+      className={`px-4 py-2 rounded-md text-sm font-medium border transition-colors shadow-inner shadow-black/20 tracking-tight ${
         disabled
           ? 'bg-zinc-900 text-zinc-600 border-zinc-800 cursor-not-allowed'
-          : 'bg-gradient-to-r from-sky-600 to-indigo-600 text-white border-sky-500 hover:from-sky-500 hover:to-indigo-500'
+          : 'bg-gradient-to-r from-sky-600 via-indigo-600 to-sky-500 text-white border-sky-500 hover:from-sky-500 hover:via-indigo-500 hover:to-sky-400 shadow-lg shadow-sky-900/30'
       }`}
     >
       {children}
