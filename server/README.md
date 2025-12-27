@@ -37,7 +37,41 @@ This script will:
 - Create the `.env` file from `.env.example`
 - Set up the `postgres_data` directory with proper permissions
 - Build and start all containers
+- Apply database schema automatically
 - Test the API endpoint
+
+## Database
+
+### Schema
+
+The database schema is automatically applied when starting fresh containers. See:
+- **[DATABASE.md](DATABASE.md)** - Complete database documentation
+- **[SCHEMA_DIAGRAM.md](SCHEMA_DIAGRAM.md)** - Visual schema reference
+- **[init.sql](init.sql)** - Schema definition
+
+### Database Management
+
+**Apply schema to existing database:**
+```bash
+./apply-schema.sh
+```
+
+**Load test data:**
+```bash
+./seed.sh
+```
+
+**Connect to database:**
+```bash
+docker exec -it gearguard-db psql -U gearguard_user -d gearguard_db
+```
+
+**Reset database completely:**
+```bash
+docker-compose down
+sudo rm -rf postgres_data/pgdata
+docker-compose up -d
+```
 
 ### Manual Setup
 
@@ -101,7 +135,7 @@ docker-compose up --build
 docker-compose exec api bash
 
 # Access PostgreSQL
-docker-compose exec db psql -U gearguard -d gearguard_db
+docker-compose exec db psql -U gearguard_user -d gearguard_db
 ```
 
 ## Database Persistence
@@ -168,13 +202,23 @@ If you encounter permission errors with PostgreSQL:
 
 ```
 server/
-├── main.py              # FastAPI application
-├── requirements.txt     # Python dependencies
-├── Dockerfile          # Container configuration
-├── docker-compose.yml  # Multi-container orchestration
-├── setup.sh            # Automated setup script
-├── .dockerignore       # Files to exclude from Docker
-├── .env.example        # Environment variables template
-├── postgres_data/      # PostgreSQL data (auto-created, gitignored)
-└── README.md          # This file
+├── main.py                # FastAPI application
+├── requirements.txt       # Python dependencies
+├── Dockerfile            # Container configuration
+├── docker-compose.yml    # Multi-container orchestration
+├── setup.sh              # Automated setup script
+├── .dockerignore         # Files to exclude from Docker
+├── .env.example          # Environment variables template
+├── postgres_data/        # PostgreSQL data (auto-created, gitignored)
+│
+├── init.sql              # Database schema
+├── seed_data.sql         # Test data
+├── sample_queries.sql    # Example SQL queries
+├── apply-schema.sh       # Schema application script
+├── seed.sh               # Seed data loader
+│
+├── DATABASE.md           # Database documentation
+├── SCHEMA_DIAGRAM.md     # Schema visual reference
+├── SETUP_SUMMARY.md      # Setup completion summary
+└── README.md             # This file
 ```
