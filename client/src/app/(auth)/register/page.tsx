@@ -52,22 +52,20 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0f1419] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-black flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Logo/Brand */}
         <div className="text-center mb-12">
-          <h1 className="text-3xl font-bold text-[#e8eaed] tracking-tight mb-2">
+          <h1 className="text-2xl font-semibold text-white tracking-tight mb-2">
             GearGuard
           </h1>
-          <p className="text-[#9aa0a6] text-sm">The Ultimate Maintenance Tracker</p>
+          <p className="text-[#666666] text-sm">Create your account</p>
         </div>
 
-        {/* Sign Up Form Card */}
-        <div className="bg-[#1a1f26] border border-[#2d3139] rounded-lg p-8 shadow-xl">
-          <h2 className="text-xl font-semibold text-[#e8eaed] mb-6">Sign Up</h2>
-
+        {/* Register Form Card */}
+        <div className="bg-[#0a0a0a] border border-[#1f1f1f] rounded-lg p-8">
           {error && (
-            <div className="mb-6 p-3 bg-[#3d1a1a] border border-[#8b3a3a] rounded text-[#ff6b6b] text-sm">
+            <div className="mb-6 p-3 bg-[#141414] border border-[#ef4444] rounded text-[#ef4444] text-sm">
               {error}
             </div>
           )}
@@ -75,8 +73,8 @@ export default function RegisterPage() {
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Name Field */}
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-[#9aa0a6] mb-2">
-                Name
+              <label htmlFor="name" className="block text-sm font-medium text-[#a0a0a0] mb-2">
+                Full name
               </label>
               <input
                 id="name"
@@ -84,7 +82,7 @@ export default function RegisterPage() {
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 required
-                className="w-full px-4 py-3 bg-[#0f1419] border border-[#2d3139] rounded text-[#e8eaed] placeholder-[#5f6368] focus:outline-none focus:border-[#4a90e2] focus:ring-1 focus:ring-[#4a90e2] transition-colors"
+                className="w-full px-4 py-3 bg-black border border-[#1f1f1f] rounded text-white placeholder-[#666666] focus:outline-none focus:border-white transition-colors"
                 placeholder="John Doe"
                 disabled={isLoading}
               />
@@ -92,8 +90,8 @@ export default function RegisterPage() {
 
             {/* Email Field */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-[#9aa0a6] mb-2">
-                Email id
+              <label htmlFor="email" className="block text-sm font-medium text-[#a0a0a0] mb-2">
+                Email
               </label>
               <input
                 id="email"
@@ -101,7 +99,7 @@ export default function RegisterPage() {
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 required
-                className="w-full px-4 py-3 bg-[#0f1419] border border-[#2d3139] rounded text-[#e8eaed] placeholder-[#5f6368] focus:outline-none focus:border-[#4a90e2] focus:ring-1 focus:ring-[#4a90e2] transition-colors"
+                className="w-full px-4 py-3 bg-black border border-[#1f1f1f] rounded text-white placeholder-[#666666] focus:outline-none focus:border-white transition-colors"
                 placeholder="you@example.com"
                 disabled={isLoading}
               />
@@ -109,7 +107,7 @@ export default function RegisterPage() {
 
             {/* Password Field */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-[#9aa0a6] mb-2">
+              <label htmlFor="password" className="block text-sm font-medium text-[#a0a0a0] mb-2">
                 Password
               </label>
               <input
@@ -118,16 +116,16 @@ export default function RegisterPage() {
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 required
-                className="w-full px-4 py-3 bg-[#0f1419] border border-[#2d3139] rounded text-[#e8eaed] placeholder-[#5f6368] focus:outline-none focus:border-[#4a90e2] focus:ring-1 focus:ring-[#4a90e2] transition-colors"
+                className="w-full px-4 py-3 bg-black border border-[#1f1f1f] rounded text-white placeholder-[#666666] focus:outline-none focus:border-white transition-colors"
                 placeholder="••••••••"
                 disabled={isLoading}
               />
             </div>
 
-            {/* Re-Enter Password Field */}
+            {/* Confirm Password Field */}
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-[#9aa0a6] mb-2">
-                Re-Enter password
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-[#a0a0a0] mb-2">
+                Confirm password
               </label>
               <input
                 id="confirmPassword"
@@ -135,7 +133,7 @@ export default function RegisterPage() {
                 value={formData.confirmPassword}
                 onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                 required
-                className="w-full px-4 py-3 bg-[#0f1419] border border-[#2d3139] rounded text-[#e8eaed] placeholder-[#5f6368] focus:outline-none focus:border-[#4a90e2] focus:ring-1 focus:ring-[#4a90e2] transition-colors"
+                className="w-full px-4 py-3 bg-black border border-[#1f1f1f] rounded text-white placeholder-[#666666] focus:outline-none focus:border-white transition-colors"
                 placeholder="••••••••"
                 disabled={isLoading}
               />
@@ -145,29 +143,24 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-[#4a90e2] text-white py-3 px-4 rounded font-medium hover:bg-[#5a9ff2] focus:outline-none focus:ring-2 focus:ring-[#4a90e2] focus:ring-offset-2 focus:ring-offset-[#1a1f26] disabled:opacity-50 disabled:cursor-not-allowed transition-all mt-2"
+              className="w-full bg-white text-black py-3 px-4 rounded font-medium hover:bg-[#e0e0e0] focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
-              {isLoading ? 'Creating account...' : 'Sign Up'}
+              {isLoading ? 'Creating account...' : 'Create account'}
             </button>
           </form>
 
-          {/* Footer Links */}
+          {/* Footer Link */}
           <div className="mt-6 text-center text-sm">
-            <span className="text-[#9aa0a6]">Already have an account?</span>
+            <span className="text-[#666666]">Already have an account?</span>
             {' '}
             <Link 
               href="/login" 
-              className="text-[#4a90e2] hover:text-[#5a9ff2] transition-colors font-medium"
+              className="text-white hover:text-[#a0a0a0] transition-colors font-medium"
             >
               Sign in
             </Link>
           </div>
         </div>
-
-        {/* Footer Note */}
-        <p className="text-center text-xs text-[#5f6368] mt-8">
-          Secure maintenance management for your operations
-        </p>
       </div>
     </div>
   );
