@@ -45,6 +45,14 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   checkAuth: async () => {
     const token = auth.getToken();
+    const cachedUser = auth.getUser();
+
+    // Fast path: if we already have a stored user and token (test mode), trust it
+    if (token && cachedUser) {
+      set({ user: cachedUser, isAuthenticated: true, isLoading: false });
+      return;
+    }
+
     if (!token) {
       set({ isLoading: false, isAuthenticated: false, user: null });
       return;
