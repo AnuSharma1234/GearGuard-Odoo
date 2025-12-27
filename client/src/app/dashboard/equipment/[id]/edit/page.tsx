@@ -1,10 +1,14 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useState, useEffect } from 'react';
+import { useRouter, useParams } from 'next/navigation';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/lib/api';
 import { useAuthStore } from '@/store/authStore';
+import equipmentRawData from '../../../../../../data/equipment.json';
+import departmentsRawData from '../../../../../../data/departments.json';
+import maintenanceTeamsRawData from '../../../../../../data/maintenance_teams.json';
+import usersRawData from '../../../../../../data/users.json';
 
 const EQUIPMENT_CATEGORIES = [
   'Machining',
@@ -23,8 +27,10 @@ const EQUIPMENT_STATUS = [
   'scrapped',
 ];
 
-export default function NewEquipmentPage() {
+export default function EditEquipmentPage() {
   const router = useRouter();
+  const params = useParams();
+  const equipmentId = params.id as string;
   const queryClient = useQueryClient();
   const user = useAuthStore((state) => state.user);
 
@@ -41,27 +47,34 @@ export default function NewEquipmentPage() {
     status: 'active',
   });
 
-  const { data: departmentsData } = useQuery({
-    queryKey: ['departments'],
-    queryFn: () => apiClient.getDepartments(),
-  });
+  const [isLoading, setIsLoading] = useState(true);
 
-  const { data: teamsData } = useQuery({
-    queryKey: ['maintenance-teams'],
-    queryFn: () => apiClient.getTeams(),
-  });
+  const departments = departmentsRawData;
+  const teams = maintenanceTeamsRawData;
+  const users = usersRawData;
 
-  const { data: usersData } = useQuery({
-    queryKey: ['users'],
-    queryFn: () => apiClient.getUsers(),
-  });
+  // Load equipment data
+  useEffect(() => {
+    const equipment = equipmentRawData.find((e: any) => e.id === equipmentId);
+    if (equipment) {
+      setFormData({
+        name: equipment.name,
+        serial_number: equipment.serial_number,
+        category: equipment.category,
+        purchase_date: equipment.purchase_date,
+        warranty_expiry: equipment.warranty_expiry,
+        location: equipment.location,
+        department_id: equipment.department_id,
+        assigned_employee: equipment.assigned_employee,
+        maintenance_team_id: equipment.maintenance_team_id,
+        status: equipment.status,
+      });
+      setIsLoading(false);
+    }
+  }, [equipmentId]);
 
-  const departments = departmentsData || [];
-  const teams = teamsData || [];
-  const users = usersData || [];
-
-  const createEquipmentMutation = useMutation({
-    mutationFn: (data: any) => apiClient.createEquipment(data),
+  const updateEquipmentMutation = useMutation({
+    mutationFn: (data: any) => apiClient.updateEquipment(equipmentId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['equipment'] });
       router.push('/dashboard/equipment');
@@ -78,7 +91,7 @@ export default function NewEquipmentPage() {
       serial_number: formData.serial_number,
       category: formData.category,
       purchase_date: formData.purchase_date,
-      warranty_expiry: formData.warranty_expiry || undefined,
+      warranty_expiry: formData.warranty_expiry,
       location: formData.location,
       department_id: formData.department_id,
       assigned_employee: formData.assigned_employee,
@@ -86,8 +99,20 @@ export default function NewEquipmentPage() {
       status: formData.status,
     };
 
-    createEquipmentMutation.mutate(equipmentData);
+    updateEquipmentMutation.mutate(equipmentData);
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="flex items-center space-x-2">
+          <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+          <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+          <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen py-8">
@@ -103,9 +128,9 @@ export default function NewEquipmentPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
               </svg>
             </button>
-            <h1 className="text-2xl font-semibold text-white">Add New Equipment</h1>
+            <h1 className="text-2xl font-semibold text-white">Edit Equipment</h1>
           </div>
-          <p className="text-[#666666] text-sm ml-8">Register new equipment in the system</p>
+          <p className="text-[#666666] text-sm ml-8">Update equipment information</p>
         </div>
 
         {/* Form Card */}
@@ -361,18 +386,18 @@ export default function NewEquipmentPage() {
               </button>
               <button
                 type="submit"
-                disabled={createEquipmentMutation.isPending}
+                disabled={updateEquipmentMutation.isPending}
                 className="px-8 py-2.5 bg-white text-black text-sm font-medium rounded-lg hover:bg-[#e0e0e0] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
               >
-                {createEquipmentMutation.isPending ? (
+                {updateEquipmentMutation.isPending ? (
                   <span className="flex items-center space-x-2">
                     <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                     </svg>
-                    <span>Adding...</span>
+                    <span>Updating...</span>
                   </span>
-                ) : 'Add Equipment'}
+                ) : 'Update Equipment'}
               </button>
             </div>
           </form>
@@ -381,3 +406,4 @@ export default function NewEquipmentPage() {
     </div>
   );
 }
+

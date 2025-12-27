@@ -3,7 +3,7 @@
 import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import StatusBadge from '@/components/dashboard/StatusBadge';
-import { RequestStage } from '@/lib/dummyData';
+import type { RequestStage } from '@/types/requests';
 
 interface MaintenanceRequest {
   id: string;
